@@ -1,0 +1,196 @@
+
+.error-message {
+    color: #ff2222;
+}
+.wrapper{
+  padding-left: 100px;
+}
+
+.columns {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    max-height: 100vh;
+    background:rgba(0, 0, 0, 0.24);
+    background-size: contain;
+}
+
+
+.login-box {
+    animation: fadeIn 1s;
+    z-index: 10;
+    border-radius: 5px;
+    position: relative;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    min-width: 400px;
+    min-height: 200px;
+    padding: 4rem 3rem;
+    background-color: white;
+}
+
+
+
+.login-box .login {
+    display: none;
+}
+
+.login-box .action .signup {
+    float: right;
+    font-weight: 700;
+}
+
+.login-box .input-field {
+    width: 100%;
+    position: relative;
+}
+
+.login-box .input-field i {
+    position: relative;
+    position: absolute;
+    top: 10px;
+    left: 50px;
+}
+
+.login-box .input-field #password {
+    background: url(https://res.cloudinary.com/www-santhoshthomas-xyz/image/upload/v1620796331/portfolio/lock_dnkpk8.png) no-repeat 5%;
+    background-size: 20px;
+    z-index: 50;
+}
+
+.login-box .input-field #email {
+    background: url(https://res.cloudinary.com/www-santhoshthomas-xyz/image/upload/v1620796341/portfolio/name_1_rgo5hw.png) no-repeat 5%;
+    background-size: 20px;
+    z-index: 50;
+}
+
+.login-box .input-field input {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    width: 100%;
+    display: block;
+    padding: 15px 35px;
+    padding-left: 55px;
+    margin: 26px 0;
+    border: none;
+    border-left: 4px solid #0e1776;
+    border-radius: 4px;
+}
+
+.login-box-button {
+    position: relative;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box-button button {
+    padding: 0.8rem 2rem;
+    background: #0e1776;
+    color: white;
+    font-weight: 800;
+    border: none;
+    transition: all 1s ease-in;
+    background-position: 0;
+}
+
+.login-box-button button:active {
+    background-image: linear-gradient(to right top, #0e1776, #091b97, #031db9, #011edc, #081dff);
+    background-position: 400%;
+    transform: scale(1.1);
+}
+
+.login-box .topline {
+    display: inline-block;
+    position: relative;
+    position: relative;
+}
+
+.login-box .topline:after {
+    content: "";
+    position: absolute;
+    width: 40%;
+    transform: scaleX(1);
+    height: 5px;
+    top: -5px;
+    left: 0;
+    background-color: #0e1776;
+}
+
+@media screen and (max-width: 776px) {
+    .login-box {
+        padding: 4rem 2rem !important;
+        right: unset !important;
+        width: 50px !important;
+        max-width: 100px;
+    }
+}
+
+#header {
+    position: absolute;
+    width: 220px;
+  }
+  #header .pro-sidebar {
+    height: 100vh;
+  }
+  #header .closemenu {
+    color: #000;
+    position: absolute;
+    right: 0;
+    z-index: 9999;
+    line-height: 20px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 22px;
+    top: 55px;
+    cursor: pointer;
+  }
+  #header .pro-sidebar {
+    width: 100%;
+    min-width: 100%;
+  }
+  #header .pro-sidebar.collapsed {
+    width: 80px;
+    min-width: 80px;
+  }
+  #header .pro-sidebar-inner {
+    background-color: white;
+    box-shadow: 0.5px 0.866px 2px 0px rgba(0, 0, 0, 0.15);
+  }
+  #header .pro-sidebar-inner .pro-sidebar-layout {
+    overflow-y: hidden;
+  }
+  #header .pro-sidebar-inner .pro-sidebar-layout .logotext p {
+    font-size: 20px;
+    padding: 0 20px;
+    color: #000;
+    font-weight: bold;
+  }
+  #header .pro-sidebar-inner .pro-sidebar-layout ul {
+    padding: 0 5px;
+  }
+  #header .pro-sidebar-inner .pro-sidebar-layout ul .pro-inner-item {
+    color: #000;
+    margin: 10px 0px;
+    font-weight: bold;
+  }
+  #header .pro-sidebar-inner .pro-sidebar-layout ul .pro-inner-item .pro-icon-wrapper {
+    background-color: #fbf4cd;
+    color: #000;
+    border-radius: 3px;
+  }
+  #header .pro-sidebar-inner .pro-sidebar-layout ul .pro-inner-item .pro-icon-wrapper .pro-item-content {
+    color: #000;
+  }
+  #header .pro-sidebar-inner .pro-sidebar-layout .active {
+    background-image: linear-gradient(0deg, #fece00 0%, #ffe172 100%);
+  }
+  #header .logo {
+    padding: 20px;
+  }
+  
+  @media only screen and (max-width: 720px) {
+    html {
+      overflow: hidden;
+    }
+  }
