@@ -1,80 +1,71 @@
-import React, { useState } from "react";
-
-import {
-  ProSidebar,
-  Menu,
-  MenuItem,
-  SidebarHeader,
-  SidebarFooter,
-  SidebarContent,
-} from "react-pro-sidebar";
-
-import { NavLink } from "react-router-dom";
+import React from "react";
+import { setToggle } from "../stores/site"
 
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../stores/auth';
 
-import { FaList, FaRegHeart } from "react-icons/fa";
-import { FiHome, FiLogOut, FiArrowLeftCircle, FiArrowRightCircle } from "react-icons/fi";
-import { RiPencilLine } from "react-icons/ri";
-import { BiCog } from "react-icons/bi";
-
-import "react-pro-sidebar/dist/css/styles.css";
-
 const Header = () => {
 
-  const [menuCollapse, setMenuCollapse] = useState(false)
-
-  const menuIconClick = () => {
-    menuCollapse ? setMenuCollapse(false) : setMenuCollapse(true);
-  };
   const dispatch = useDispatch()
-  const { user } = useSelector(state => state.auth)
+	const { toggle } = useSelector(state => state.site)
 
   return (
-    <>
-      <div id="header">
-        <ProSidebar collapsed={menuCollapse}>
-          <SidebarHeader>
-            <div className="logotext">
-              {/* small and big change using menucollapse state */}
-              <p>{menuCollapse ? "Logo" : "Big Logo"}</p>
-            </div>
-            <div className="closemenu" onClick={menuIconClick}>
-              {/* changing menu collapse icon on click */}
-              {menuCollapse ? (
-                <FiArrowRightCircle />
-              ) : (
-                <FiArrowLeftCircle />
-              )}
-            </div>
-          </SidebarHeader>
-          <SidebarContent>
-            <Menu iconShape="square">
-              <NavLink to='/' activeClassName="active">
-                <MenuItem active={true} icon={<FiHome />} to="/">
-                  Home
-                </MenuItem>
-              </NavLink>
-
-                <NavLink to="about">
-                  <MenuItem icon={<FaList />}>Category</MenuItem>
-
-                </NavLink>
-
-              <MenuItem icon={<FaRegHeart />}>Favourite</MenuItem>
-              <MenuItem icon={<RiPencilLine />}>Author</MenuItem>
-              <MenuItem icon={<BiCog />}>Settings</MenuItem>
-            </Menu>
-          </SidebarContent>
-          <SidebarFooter>
-            <Menu iconShape="square">
-              <MenuItem icon={<FiLogOut />} onClick={() => dispatch(logout())}>Logout</MenuItem>
-            </Menu>
-          </SidebarFooter>
-        </ProSidebar>
+    <div className="app-header header-shadow">
+      <div className="app-header__logo">
+        <div className="logo-src"></div>
+        <div className="header__pane ml-auto">
+          <div>
+            <button type="button"
+              onClick={() => dispatch(setToggle())}
+              className={toggle ? "hamburger close-sidebar-btn hamburger--elastic" : "hamburger close-sidebar-btn hamburger--elastic is-active"}
+              data-class="closed-sidebar">
+              <span className="hamburger-box">
+                <span className="hamburger-inner"></span>
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
-    </>
+      <div className="app-header__mobile-menu">
+        <div>
+          <button type="button" className="hamburger hamburger--elastic mobile-toggle-nav">
+            <span className="hamburger-box">
+              <span className="hamburger-inner"></span>
+            </span>
+          </button>
+        </div>
+      </div>
+      <div className="app-header__menu">
+        <span>
+          <button type="button"
+            className="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
+            <span className="btn-icon-wrapper">
+              <i className="fa fa-ellipsis-v fa-w-6"></i>
+            </span>
+          </button>
+        </span>
+      </div>
+      <div className="app-header__content">
+        <div className="app-header-right">
+          <div className="header-btn-lg pr-0">
+            <div className="widget-content p-0">
+              <div className="widget-content-wrapper">
+                
+                <div className="widget-content-right header-user-info ml-3">
+                  <button type="button"
+                  onClick={() => dispatch(logout())}
+                    className="btn-shadow p-1 btn btn-primary btn-sm show-toastr-example">
+                    <i className="fa text-white fa-arrow-left pr-1 pl-1"></i> 
+                    Çıxış 
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
