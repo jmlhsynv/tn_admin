@@ -1,17 +1,35 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import categoryApi from "../api/categoryApi";
 
-export const category = createSlice({
-	name: 'category',
-	initialState: {
-		categories: []
-	},
-	reducers: {
-		getCategories: (state, {payload}) => {
-            return {categories: [...state.categories, ...payload]}
-        }
-	}
-})
+export const fetchAsyncCategory = createAsyncThunk(
+  "category/fetchAsyncCategory",
+  async () => {
+    const response = await categoryApi.get();
+    return response.data;
+  }
+);
 
-export const { getCategories } = category.actions
+const initialState = {
+  categories: {}
+};
 
-export default category.reducer
+const categorySlice = createSlice({
+  name: "categories",
+  initialState,
+  reducers: {},
+  extraReducers: {
+    [fetchAsyncCategory.pending]: () => {
+      console.log("Pending");
+    },
+    [fetchAsyncCategory.fulfilled]: (state, { payload }) => {
+      console.log("Fetched Successfully!");
+      return { ...state, categories: payload };
+    },
+    [fetchAsyncCategory.rejected]: () => {
+      console.log("Rejected!");
+    }
+  },
+});
+
+export const getAllCategory = (state) => state.categories.categories;
+export default categorySlice.reducer;
