@@ -3,6 +3,8 @@ import About from "../views/About"
 import Profile from "../views/Profile"
 import Login from "../views/Login"
 
+import Categories from "../views/Category/Categories"
+
 export const routes = [
     {
         path: "/",
@@ -11,11 +13,12 @@ export const routes = [
         auth: true
     },
     {
-        path: "/about",
+        path: "/categories",
         exact: true,
-        component: About,
+        component: Categories,
         auth: true
     },
+    
     {
         path: "/profile",
         exact: true,

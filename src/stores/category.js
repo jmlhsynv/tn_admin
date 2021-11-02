@@ -10,7 +10,7 @@ export const fetchAsyncCategory = createAsyncThunk(
 );
 
 const initialState = {
-  categories: {}
+  categories: []
 };
 
 const categorySlice = createSlice({

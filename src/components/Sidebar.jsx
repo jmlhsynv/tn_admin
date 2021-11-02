@@ -63,7 +63,7 @@ function Sidebar() {
                             </NavLink>
                             <ul className={toggle.first ? "mm-collapse" :  "mm-collapse mm-show "} >
                                 <li>
-                                    <NavLink to="#">
+                                    <NavLink to="/categories">
                                         <i className="metismenu-icon"></i>
                                         Kateqoriyalar
                                     </NavLink>
