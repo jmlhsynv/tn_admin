@@ -1,5 +1,4 @@
 import Home from "../views/Home"
-import About from "../views/About"
 import Profile from "../views/Profile"
 import Login from "../views/Login"
 
