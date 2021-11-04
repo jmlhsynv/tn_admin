@@ -492,3 +492,7 @@ a:focus {
   display: flex;
   align-items: center;
 }
+.modal-body{
+  min-width: 500px;
+  min-height: 300px;
+}
