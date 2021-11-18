@@ -1,15 +1,33 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import categoryApi from "../../api/categoryApi";
+import axios from "axios";
 
 export const fetchAsyncCategory = createAsyncThunk(
   "category/fetchAsyncCategory",
   async () => {
-    const response = await categoryApi.get();
+    const response = await axios.get('http://localhost:3001/categories');
     return response.data;
   }
 );
 
+export const postAsyncCategory = createAsyncThunk(
+  "category/postAsyncCategory",
+  async (postedData) => {
+    const res = await axios.post('http://localhost:3001/categories', postedData);
+    return res.data;
+  }
+);
+
+export const deleteAsyncCategory = createAsyncThunk(
+  "category/deleteAsyncCategory",
+  async (id) => {
+    await axios.delete(`http://localhost:3001/categories/${id}`);
+    // console.log(res);
+    return id;
+  }
+);
+
 const initialState = {
+  pending: false,
   categories: []
 };
 
@@ -18,16 +36,38 @@ const categorySlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    [fetchAsyncCategory.pending]: () => {
-      console.log("Pending");
+    // GET
+    [fetchAsyncCategory.pending]: (state) => {
+      return {...state, pending: true}
     },
     [fetchAsyncCategory.fulfilled]: (state, { payload }) => {
-      console.log("Fetched Successfully!");
-      return { ...state, categories: payload };
+      return { ...state, pending:false, categories: payload,  };
     },
     [fetchAsyncCategory.rejected]: () => {
       console.log("Rejected!");
-    }
+    },
+
+    // POST
+    [postAsyncCategory.pending]: (state) => {
+      return {...state, pending: true}
+    },
+    [postAsyncCategory.fulfilled]: (state, {payload}) => {
+      return { ...state, pending:false,  categories: [...state.categories, payload] };
+    },
+    [postAsyncCategory.rejected]: () => {
+      console.log("post Rejected!");  
+    },
+
+    // DELETE
+    [deleteAsyncCategory.pending]: (state) => {
+      return {...state, pending: true}
+    },
+    [deleteAsyncCategory.fulfilled]: (state, {payload}) => {
+      return { ...state, pending:false,  categories: [...state.categories.filter( e => e.id !== payload)] };
+    },
+    [deleteAsyncCategory.rejected]: () => {
+      console.log("post Rejected!");  
+    },
   },
 });
 
