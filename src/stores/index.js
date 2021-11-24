@@ -4,6 +4,7 @@ import siteReducer from "./site"
 import categoryReducer from './Categories/category'
 import viewCategoryReducer from './Categories/viewCategory'
 import newCategoryReducer from './Categories/newCategory'
+import editCategoryReducer from './Categories/editCategory'
 
 export default configureStore({
 	reducer: {
@@ -11,7 +12,7 @@ export default configureStore({
 		site: siteReducer,
 		categories: categoryReducer,
 		viewCategory: viewCategoryReducer,
-		newCategory: newCategoryReducer
-
+		newCategory: newCategoryReducer,
+		editCategory: editCategoryReducer
 	}
 })

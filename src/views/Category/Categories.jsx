@@ -4,8 +4,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchAsyncCategory } from '../../stores/Categories/category';
 import { deleteAsyncCategory } from '../../stores/Categories/category';
 
-import { setNewModal } from '../../stores/Categories/newCategory';
 import { setModal } from '../../stores/Categories/viewCategory';
+import { setNewModal } from '../../stores/Categories/newCategory';
+import { setEditModal } from '../../stores/Categories/editCategory';
 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -27,6 +28,9 @@ function Categories() {
         dispatch(setNewModal())
     }
 
+    const editCategory = (index) => {
+        dispatch(setEditModal(index))
+    }
     const deleteCategory = (name, id) => {
 
         confirmAlert({
@@ -76,9 +80,8 @@ function Categories() {
                                             <div role="group" className="btn-group" data-toggle="buttons">
                                                 <button type="button" className="btn btn-primary" onClick={() => viewCategory(index)}>
                                                     <i className="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i>
-
                                                 </button>
-                                                <button type="button" className="btn btn-success">
+                                                <button type="button" className="btn btn-success" onClick={ () => editCategory(index)}>
                                                     <i className="fa fa-fw" aria-hidden="true" title="Copy to use edit"></i>
                                                 </button>
                                                 <button type="button" className="btn btn-danger" onClick={() => deleteCategory(index.NAME_, index.id)}>

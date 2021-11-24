@@ -4,7 +4,8 @@ import axios from "axios";
 export const fetchAsyncCategory = createAsyncThunk(
   "category/fetchAsyncCategory",
   async () => {
-    const response = await axios.get('http://localhost:3001/categories');
+    // const response = await axios.get('http://localhost:3001/categories');
+    const response = await axios.get('http://localhost:1998/api/Categories');
     return response.data;
   }
 );
@@ -12,7 +13,17 @@ export const fetchAsyncCategory = createAsyncThunk(
 export const postAsyncCategory = createAsyncThunk(
   "category/postAsyncCategory",
   async (postedData) => {
-    const res = await axios.post('http://localhost:3001/categories', postedData);
+    // const res = await axios.post('http://localhost:3001/categories', postedData);
+    const res = await axios.post('http://localhost:1998/api/Categories', postedData);
+    return res.data;
+  }
+);
+
+export const editAsyncCategory = createAsyncThunk(
+  "category/editAsyncCategory",
+  async (edittedData) => {
+    const res = await axios.put(`http://localhost:3001/categories/${edittedData.id}`, edittedData);
+    console.log(res.data);
     return res.data;
   }
 );
@@ -56,6 +67,17 @@ const categorySlice = createSlice({
     },
     [postAsyncCategory.rejected]: () => {
       console.log("post Rejected!");  
+    },
+
+    // EDIT
+    [editAsyncCategory.pending]: (state) => {
+      return {...state, pending: true}
+    },
+    [editAsyncCategory.fulfilled]: (state, {payload}) => {
+      return { ...state, pending:false };
+    },
+    [editAsyncCategory.rejected]: () => {
+      console.log("put Rejected!");  
     },
 
     // DELETE
