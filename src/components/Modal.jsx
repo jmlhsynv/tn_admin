@@ -34,7 +34,7 @@ function Modal({
     const dispatch = useDispatch()
 
     // ADD NEW CATEGORY
-    const [inp_new, setInp_new] = useState();
+    const [inp_new, setInp_new] = useState({});
 
     const handleChange = (e) => {
         let value = e.target.value;
@@ -45,6 +45,8 @@ function Modal({
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(postAsyncCategory(inp_new))
+        e.target.reset()
+        // dispatch(setNewModal())
     }
 
     // EDIT CATEGORY
@@ -63,6 +65,7 @@ function Modal({
     const handleEditSubmit = (e) => {
         e.preventDefault()
         dispatch(editAsyncCategory(inp_edit))
+        dispatch(setEditModal())
     }
     return (
         

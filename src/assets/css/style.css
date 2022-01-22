@@ -52,14 +52,14 @@
     left: 50px;
 }
 
-.login-box .input-field #password {
-    background: url(https://res.cloudinary.com/www-santhoshthomas-xyz/image/upload/v1620796331/portfolio/lock_dnkpk8.png) no-repeat 5%;
+.login-box .input-field #password, .login-box .input-field #password:autofill {
+    background: url(../images/lock.png) no-repeat 5%;
     background-size: 20px;
     z-index: 50;
 }
 
 .login-box .input-field #email {
-    background: url(https://res.cloudinary.com/www-santhoshthomas-xyz/image/upload/v1620796341/portfolio/name_1_rgo5hw.png) no-repeat 5%;
+    background: url(../images/name.png) no-repeat 5%;
     background-size: 20px;
     z-index: 50;
 }

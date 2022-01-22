@@ -1,11 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const url = "http://localhost:53535/api/Categories"
+
+
 export const fetchAsyncCategory = createAsyncThunk(
   "category/fetchAsyncCategory",
   async () => {
-    // const response = await axios.get('http://localhost:3001/categories');
-    const response = await axios.get('http://localhost:1998/api/Categories');
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer "+ localStorage.getItem('token')
+    }
+    const response = await axios.get(url, {headers});
     return response.data;
   }
 );
@@ -13,32 +19,51 @@ export const fetchAsyncCategory = createAsyncThunk(
 export const postAsyncCategory = createAsyncThunk(
   "category/postAsyncCategory",
   async (postedData) => {
-    // const res = await axios.post('http://localhost:3001/categories', postedData);
-    const res = await axios.post('http://localhost:1998/api/Categories', postedData);
-    return res.data;
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer "+ localStorage.getItem('token')
+    }
+    const res = await axios.post(url, postedData, {headers});
+    return {
+      data: postedData,
+      success: res.data
+    };
   }
 );
 
 export const editAsyncCategory = createAsyncThunk(
   "category/editAsyncCategory",
   async (edittedData) => {
-    const res = await axios.put(`http://localhost:3001/categories/${edittedData.id}`, edittedData);
-    console.log(res.data);
-    return res.data;
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer "+ localStorage.getItem('token')
+    }
+    const res = await axios.put(`${url}/${edittedData.ID}`, edittedData, {headers});
+    return {
+      data: edittedData,
+      success: res.data
+    }
   }
 );
 
 export const deleteAsyncCategory = createAsyncThunk(
   "category/deleteAsyncCategory",
   async (id) => {
-    await axios.delete(`http://localhost:3001/categories/${id}`);
-    // console.log(res);
-    return id;
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer "+ localStorage.getItem('token')
+    }
+    const res = await axios.delete(`${url}/${id}`, {headers});
+    return {
+      id: id,
+      success: res.data
+    };
   }
 );
 
 const initialState = {
   pending: false,
+  error: "",
   categories: []
 };
 
@@ -63,7 +88,13 @@ const categorySlice = createSlice({
       return {...state, pending: true}
     },
     [postAsyncCategory.fulfilled]: (state, {payload}) => {
-      return { ...state, pending:false,  categories: [...state.categories, payload] };
+      console.log(payload);
+      if (payload.success === "True") {
+        return { ...state, pending:false,  categories: [...state.categories, payload.data] };
+      }else{
+        return { ...state, pending: false, error: payload.success}
+      }
+      
     },
     [postAsyncCategory.rejected]: () => {
       console.log("post Rejected!");  
@@ -74,7 +105,9 @@ const categorySlice = createSlice({
       return {...state, pending: true}
     },
     [editAsyncCategory.fulfilled]: (state, {payload}) => {
-      return { ...state, pending:false };
+      return { ...state, pending:false,  categories: [
+        ...state.categories.map( e => e.ID === payload.data.ID ? {...e, NAME_: payload.data.NAME_, CODE: payload.data.CODE }: e)
+      ]};
     },
     [editAsyncCategory.rejected]: () => {
       console.log("put Rejected!");  
@@ -85,10 +118,10 @@ const categorySlice = createSlice({
       return {...state, pending: true}
     },
     [deleteAsyncCategory.fulfilled]: (state, {payload}) => {
-      return { ...state, pending:false,  categories: [...state.categories.filter( e => e.id !== payload)] };
+      return { ...state, pending:false,  categories: [...state.categories.filter( e => e.ID !== payload.id)] };
     },
     [deleteAsyncCategory.rejected]: () => {
-      console.log("post Rejected!");  
+      console.log("delete Rejected!");  
     },
   },
 });

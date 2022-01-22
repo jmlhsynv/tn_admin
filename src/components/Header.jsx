@@ -1,14 +1,22 @@
 import React from "react";
+import { useHistory } from "react-router-dom"
+
 import { setToggle } from "../stores/site"
 
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../stores/auth';
 
 const Header = () => {
+	const history = useHistory()
 
   const dispatch = useDispatch()
 	const { toggle } = useSelector(state => state.site)
 
+  const handleLogout = () => {
+    dispatch(logout())
+    history.push('/')
+  }
+  
   return (
     <div className="app-header header-shadow">
       <div className="app-header__logo">
@@ -53,7 +61,7 @@ const Header = () => {
                 
                 <div className="widget-content-right header-user-info ml-3">
                   <button type="button"
-                  onClick={() => dispatch(logout())}
+                  onClick={() => handleLogout()}
                     className="btn-shadow p-1 btn btn-primary btn-sm show-toastr-example">
                     <i className="fa text-white fa-arrow-left pr-1 pl-1"></i> 
                     Çıxış 
