@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useHistory } from "react-router-dom"
 
 import { setToggle } from "../stores/site"
 
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../stores/auth';
+import { removeErrors } from '../stores/auth';
 
 const Header = () => {
 	const history = useHistory()
@@ -16,7 +17,17 @@ const Header = () => {
     dispatch(logout())
     history.push('/')
   }
-  
+
+	const { error } = useSelector(state => state.auth)
+
+  useEffect( () => {
+    if (error === 401) {
+      dispatch(logout())
+      dispatch(removeErrors())
+      history.push('/')
+    }
+  }, [error, dispatch, history])
+
   return (
     <div className="app-header header-shadow">
       <div className="app-header__logo">

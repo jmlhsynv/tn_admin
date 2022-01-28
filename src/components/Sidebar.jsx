@@ -1,7 +1,12 @@
-import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux';
+import { getStatus } from '../stores/auth';
 
 function Sidebar() {
+    const loc = useLocation();
+    const dispatch = useDispatch()
+
     const [toggle, setToggle] = useState(
         {
             first: true,
@@ -9,6 +14,13 @@ function Sidebar() {
             third: true
         }
     );
+    useEffect(() => {
+        dispatch(getStatus())
+    }, [dispatch, loc.pathname])
+    
+	const { status } = useSelector(state => state.auth)
+
+    
     return (
         <div className="app-sidebar sidebar-shadow" style={{overflowY: "scroll"}}>
             <div className="app-header__logo">
@@ -52,8 +64,18 @@ function Sidebar() {
                                 Admin
                             </NavLink>
                         </li>
+                        
                         <li className="app-sidebar__heading">Menyu</li>
-
+                        {
+                            status === "admin" ? 
+                            <li>
+                                <NavLink to="/users" >
+                                    <i className="metismenu-icon  fa fa-fw" aria-hidden="true" title="Copy to use users"></i>
+                                    İstifadəçilər
+                                </NavLink>
+                            </li>
+                            : ''
+                        }
                         <li className={toggle.first ? " "  : "mm-active"} 
                         onClick={() => setToggle( {...toggle, first: !toggle.first}) }>
                             <NavLink to="#">
@@ -69,13 +91,13 @@ function Sidebar() {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="#">
+                                    <NavLink to="/marks">
                                         <i className="metismenu-icon">
                                         </i>Markalar
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="#">
+                                    <NavLink to="/submarks">
                                         <i className="metismenu-icon">
                                         </i>Marka alt kateqoriyaları
                                     </NavLink>

@@ -6,6 +6,7 @@ import swal from 'sweetalert';
 import { useDispatch } from 'react-redux';
 import { login } from "../stores/auth"
 import { useHistory } from "react-router-dom"
+const {REACT_APP_API_URL} = process.env
 
 function Login() {
 	const [inp, setInp] = useState({})
@@ -24,11 +25,10 @@ function Login() {
 
 	const handleLogin = async (e) => {
 		e.preventDefault()
-		await axios.post("http://localhost:53535/api/Login/authenticate", inp)
+		await axios.post(REACT_APP_API_URL+"Login/authenticate", inp)
 			.then(res => {
 				const data = {
-					token: res.data[0].Token,
-					status: res.data[0].User
+					token: res.data
 				}
 				dispatch(login(data))
 				history.push('/')

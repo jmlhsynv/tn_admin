@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { fetchAsyncCategory } from '../../stores/Categories/category';
 import { deleteAsyncCategory } from '../../stores/Categories/category';
+import { getStatus } from '../../stores/auth';
 
 import { setModal } from '../../stores/Categories/viewCategory';
 import { setNewModal } from '../../stores/Categories/newCategory';
@@ -15,9 +16,11 @@ import swal from 'sweetalert';
 function Categories() {
     const dispatch = useDispatch()
     const { categories } = useSelector(state => state.categories)
+	const { status } = useSelector(state => state.auth)
     
     useEffect(() => {
         dispatch(fetchAsyncCategory())
+        dispatch(getStatus())
     }, [dispatch])
 
 
@@ -33,22 +36,26 @@ function Categories() {
         dispatch(setEditModal(index))
     }
     const deleteCategory = (name, id) => {
-        swal({
-            title: `${name} silinəcək!`,
-            text: "Silməyə əminsinizmi?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-          })
-          .then((willDelete) => {
-            if (willDelete) {
-              dispatch(deleteAsyncCategory(id))
-
-              swal(`${name} silindi!`, {
-                icon: "success",
+        if(status === 'admin'){
+            swal({
+                title: `${name} silinəcək!`,
+                text: "Silməyə əminsinizmi?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+              })
+              .then((willDelete) => {
+                if (willDelete) {
+                  dispatch(deleteAsyncCategory(id))
+    
+                  swal(`${name} silindi!`, {
+                    icon: "success",
+                  });
+                } 
               });
-            } 
-          });
+        }else{
+            swal("Yetki yoxdur!", "Silmək üçün adminə müraciət edin!", "error");
+        }
     }
    
     return (
@@ -67,8 +74,8 @@ function Categories() {
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>CODE</th>
-                                <th>NAME</th>
+                                <th>Kateqoriya kodu</th>
+                                <th>Kateqoriya adı</th>
                                 <th style={{ textAlign: "center" }}><i className="pe-7s-edit"> </i></th>
                             </tr>
                         </thead>

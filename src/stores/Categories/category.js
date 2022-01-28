@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+const {REACT_APP_API_URL} = process.env
 
-const url = "http://localhost:53535/api/Categories"
+const url = REACT_APP_API_URL+"Categories"
 
 
 export const fetchAsyncCategory = createAsyncThunk(
@@ -24,6 +25,7 @@ export const postAsyncCategory = createAsyncThunk(
       "Authorization": "Bearer "+ localStorage.getItem('token')
     }
     const res = await axios.post(url, postedData, {headers});
+    console.log(res);
     return {
       data: postedData,
       success: res.data
@@ -89,8 +91,8 @@ const categorySlice = createSlice({
     },
     [postAsyncCategory.fulfilled]: (state, {payload}) => {
       console.log(payload);
-      if (payload.success === "True") {
-        return { ...state, pending:false,  categories: [...state.categories, payload.data] };
+      if (payload.success) {
+        return { ...state, pending:false,  categories: [...state.categories, {...payload.data, ID: payload.success}] };
       }else{
         return { ...state, pending: false, error: payload.success}
       }
