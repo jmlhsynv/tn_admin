@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setNewModal } from '../../stores/Marks/newMarks'
-import { setEditModal } from '../../stores/Marks/editMark';
-import { setViewModal } from '../../stores/Marks/viewMark';
+import { setNewModal } from '../../stores/Submarks/newSubmark'
+import { setEditModal } from '../../stores/Submarks/editSubmark';
+import { setViewModal } from '../../stores/Submarks/viewSubmark';
 
 import axios from "axios";
-import { postMark } from '../../stores/Marks/marks';
-import { editMark } from '../../stores/Marks/marks';
+import { postSubmark, editSubmark } from '../../stores/Submarks/submarks';
 
 const { REACT_APP_API_URL } = process.env
 
-function MarkModal() {
+function SubmarkModal() {
     const dispatch = useDispatch()
 
-    const { modal } = useSelector(state => state.newMark)
-    const { categories } = useSelector(state => state.categories)
+    const { modal } = useSelector(state => state.newSubmark)
     const { marks } = useSelector(state => state.marks)
+    const { submarks } = useSelector(state => state.submarks)
+
 
     // New Mark
     const [inp, setInp] = useState({})
@@ -27,18 +27,18 @@ function MarkModal() {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + localStorage.getItem('token')
         }
-        axios.post(REACT_APP_API_URL + "NewCode", { MODULE: "MARKS" }, { headers }).then(res => setCode(res.data[0].CODE))
-    }, [marks])
+        axios.post(REACT_APP_API_URL + "NewCode", { MODULE: "SUBMARKS" }, { headers }).then(res => setCode(res.data[0].CODE))
+    }, [submarks])
 
     useEffect(() => {
-        categories.length > 0 ? setSelect(categories[0].ID) : setSelect("")
-    }, [categories])
+        marks.length > 0 ? setSelect(marks[0].ID) : setSelect("")
+    }, [marks])
 
 
     const handleSelect = (e) => {
         let value = e.target.value
         setSelect(value)
-        setInp({...inp, CATEGORY_ID: value})
+        setInp({...inp, MARK_ID: value})
     }
     const handleChange = (e) => {
         let name = e.target.name
@@ -48,7 +48,7 @@ function MarkModal() {
             ...inp,
             [name]: value,
             CODE: code,
-            CATEGORY_ID: select,
+            MARK_ID: select,
             USER_ID: 1
         })
 
@@ -56,46 +56,46 @@ function MarkModal() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(postMark(inp))
+        dispatch(postSubmark(inp))
         e.target.reset()
         dispatch(setNewModal())
     }
 
     // Edit Modal
-    const editModal = useSelector(state => state.editMark.modal)
-    const editDetail = useSelector(state => state.editMark.detail)
+    const editModal = useSelector(state => state.editSubmark.modal)
+    const editDetail = useSelector(state => state.editSubmark.detail)
     
-    const [editCategory, setEditCategory] = useState("");
-    const [inp_edit, setInp_edit] = useState({NAME_: "", CODE: "", CATEGORY_ID: ""})
+    const [editMark, setEditMark] = useState("");
+    const [inp_edit, setInp_edit] = useState({NAME_: "", CODE: "", MARK_ID: ""})
 
     useEffect( () => {
         setInp_edit(editDetail)
-        editDetail ? setEditCategory(editDetail.CATEGORY_ID) : setEditCategory("")
+        editDetail ? setEditMark(editDetail.MARK_ID) : setEditMark("")
     }, [editDetail])
 
     const handleEditSelect = (e) => {
         let value = e.target.value
-        setEditCategory(value)
-        setInp_edit({...inp_edit, CATEGORY_ID: value})
+        setEditMark(value)
+        setInp_edit({...inp_edit, MARK_ID: value})
     }
 
     const handleEditChange = (e) => {
         let name = e.target.name
         let value = e.target.value
 
-        setInp_edit({ ...inp_edit, [name]: value, CATEGORY_ID: editCategory })
+        setInp_edit({ ...inp_edit, [name]: value, MARK_ID: editMark })
     }
 
     
     const handleEditSubmit = (e) => {
         e.preventDefault()
-        dispatch(editMark(inp_edit))
+        dispatch(editSubmark(inp_edit))
         dispatch(setEditModal())
     }
 
     // View Mark
-    const viewModal = useSelector(state => state.viewMark.modal)
-    const viewDetail = useSelector(state => state.viewMark.detail)
+    const viewModal = useSelector(state => state.viewSubmark.modal)
+    const viewDetail = useSelector(state => state.viewSubmark.detail)
 
     return (
         <>
@@ -118,23 +118,23 @@ function MarkModal() {
                             <div className="modal-body">
                                 <div className="input-group">
                                     <div className="input-group-prepend">
-                                        <span className="input-group-text">Marka Adı :</span>
+                                        <span className="input-group-text">Marka alt kateqoriya adı :</span>
                                     </div>
                                     <input type="text" className="form-control" name='NAME_' onChange={(e) => handleChange(e)} />
                                 </div>
                                 <div className="input-group mt-3">
                                     <div className="input-group-prepend">
-                                        <span className="input-group-text">Marka Kodu:</span>
+                                        <span className="input-group-text">Marka alt kateqoriya kodu:</span>
                                     </div>
                                     <input type="text" className="form-control" name='CODE' disabled value={code} onChange={(e) => handleChange(e)} />
                                 </div>
                                 <div className="input-group mt-3">
                                     <div className="input-group-prepend">
-                                        <span className="input-group-text">Marka kateqoriyası:</span>
+                                        <span className="input-group-text">Marka :</span>
                                     </div>
-                                    <select name="CATEGORY_ID" className='form-control' onChange={(e) => handleSelect(e)}>
+                                    <select name="MARK_ID" className='form-control' onChange={(e) => handleSelect(e)}>
                                         {
-                                            categories && categories.map((index, key) => (
+                                            marks && marks.map((index, key) => (
                                                 <option key={key} value={index.ID}>{index.NAME_}</option>
                                             ))
                                         }
@@ -173,25 +173,25 @@ function MarkModal() {
                             <div className="modal-body">
                                 <div className="input-group">
                                     <div className="input-group-prepend">
-                                        <span className="input-group-text">Marka Adı : </span>
+                                        <span className="input-group-text">Marka alt kateqoriya adı : </span>
                                     </div>
                                     <input type="text" className="form-control" value={inp_edit ? inp_edit.NAME_ || '' : " "} name='NAME_' onChange={(e) => handleEditChange(e)} />
                                 </div>
                                 <div className="input-group mt-3">
                                     <div className="input-group-prepend">
-                                        <span className="input-group-text">Marka Kodu :</span>
+                                        <span className="input-group-text">Marka alt kateqoriya kodu :</span>
                                     </div>
                                     <input type="text" className="form-control" disabled value={inp_edit ? inp_edit.CODE || '' : " "} name='CODE'  />
                                 </div>
                                 <div className="input-group mt-3">
                                     <div className="input-group-prepend">
-                                        <span className="input-group-text">Marka Kateqoriyası : </span>
+                                        <span className="input-group-text">Marka : </span>
                                     </div>
-                                    <select name="CATEGORY_ID" className='form-control' 
+                                    <select name="MARK_ID" className='form-control' 
                                         onChange={ (e) => handleEditSelect(e)}
-                                        value={editCategory ? editCategory || "" : ""}>
+                                        value={editMark ? editMark || "" : ""}>
                                         {
-                                            categories && categories.map( (index, key) => (
+                                            marks && marks.map( (index, key) => (
                                                 <option key={key} value={index.ID} > {index.NAME_} </option>
                                             ))
                                         }
@@ -231,8 +231,8 @@ function MarkModal() {
 
                             <p>Kod: {viewDetail && viewDetail.CODE}</p>
                             <p>Ad: {viewDetail && viewDetail.NAME_}</p>
-                            <p>Kateqoriya: {viewDetail && viewDetail.CATEGORY_NAME}</p>
-                            <p>Kateqoriya kodu: {viewDetail && viewDetail.CATEGORY_CODE}</p>
+                            <p>Marka : {viewDetail && viewDetail.MARK_NAME}</p>
+                            <p>Marka kodu : {viewDetail && viewDetail.MARK_CODE}</p>
 
                         </div>
                         <div className="modal-footer">
@@ -246,4 +246,4 @@ function MarkModal() {
     )
 }
 
-export default MarkModal
+export default SubmarkModal

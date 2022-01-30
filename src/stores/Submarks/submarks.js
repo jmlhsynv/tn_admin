@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 const { REACT_APP_API_URL } = process.env
+const url = REACT_APP_API_URL + "Submarks"
 
-const url = REACT_APP_API_URL + "Marks"
 
-
-export const fetchMarks = createAsyncThunk(
-    "marks/fetchMarks",
+export const fetchSubmarks = createAsyncThunk(
+    "submarks/fetchSubmarks",
     async () => {
         const headers = {
             "Content-Type": "application/json",
@@ -17,8 +16,8 @@ export const fetchMarks = createAsyncThunk(
     }
 );
 
-export const postMark = createAsyncThunk(
-    "marks/postMark",
+export const postSubmark = createAsyncThunk(
+    "submarks/postSubmark",
     async (postedData) => {
         const headers = {
             "Content-Type": "application/json",
@@ -33,8 +32,8 @@ export const postMark = createAsyncThunk(
     }
 );
 
-export const editMark = createAsyncThunk(
-    "marks/editMark",
+export const editSubmark = createAsyncThunk(
+    "submarks/editSubmark",
     async (edittedData) => {
         const headers = {
             "Content-Type": "application/json",
@@ -48,8 +47,8 @@ export const editMark = createAsyncThunk(
     }
 );
 
-export const deleteMark = createAsyncThunk(
-    "marks/deleteMark",
+export const deleteSubmark = createAsyncThunk(
+    "submarks/deleteSubmark",
     async (id) => {
         const headers = {
             "Content-Type": "application/json",
@@ -65,38 +64,39 @@ export const deleteMark = createAsyncThunk(
 const initialState = {
     pending: false,
     error: "",
-    marks: []
+    submarks: []
 };
 
-const markSlice = createSlice({
-    name: "marks",
+const submarkSlice = createSlice({
+    name: "submarks",
     initialState,
     reducers: {},
     extraReducers: {
+
         // GET
-        [fetchMarks.pending]: (state) => {
+        [fetchSubmarks.pending]: (state) => {
             return { ...state, pending: true }
         },
-        [fetchMarks.fulfilled]: (state, { payload }) => {
-            return { ...state, pending: false, marks: payload, };
+        [fetchSubmarks.fulfilled]: (state, { payload }) => {
+            return { ...state, pending: false, submarks: payload, };
         },
-        [fetchMarks.rejected]: () => {
+        [fetchSubmarks.rejected]: () => {
             console.log("Rejected!");
         },
 
         // POST
-        [postMark.pending]: (state) => {
+        [postSubmark.pending]: (state) => {
             return { ...state, pending: true }
         },
-        [postMark.fulfilled]: (state, { payload }) => {
+        [postSubmark.fulfilled]: (state, { payload }) => {
             console.log(payload);
             if (payload.success) {
                 return {
-                    ...state, pending: false, marks: [...state.marks,
+                    ...state, pending: false, submarks: [...state.submarks,
                     {
                         ...payload.data,
-                        ID: payload.success.ID, CATEGORY_NAME: payload.success.CATEGORY_NAME,
-                        CATEGORY_CODE: payload.success.CATEGORY_CODE
+                        ID: payload.success.ID, MARK_NAME: payload.success.MARK_NAME,
+                        MARK_CODE: payload.success.MARK_CODE
                     }]
                 };
             } else {
@@ -104,41 +104,41 @@ const markSlice = createSlice({
             }
 
         },
-        [postMark.rejected]: () => {
+        [postSubmark.rejected]: () => {
             console.log("post Rejected!");
         },
 
 
         // EDIT
-        [editMark.pending]: (state) => {
+        [editSubmark.pending]: (state) => {
             return { ...state, pending: true }
         },
-        [editMark.fulfilled]: (state, { payload }) => {
+        [editSubmark.fulfilled]: (state, { payload }) => {
             return {
-                ...state, pending: false, marks: [
-                    ...state.marks.map(e => e.ID === payload.data.ID ?
+                ...state, pending: false, submarks: [
+                    ...state.submarks.map(e => e.ID === payload.data.ID ?
                          { ...e, NAME_: payload.data.NAME_, CODE: payload.data.CODE, 
-                            CATEGORY_CODE: payload.success.CATEGORY_CODE, CATEGORY_NAME: payload.success.CATEGORY_NAME} 
+                            MARK_CODE: payload.success.MARK_CODE, MARK_NAME: payload.success.MARK_NAME} 
                         : e)
                 ]
             };
         },
-        [editMark.rejected]: () => {
+        [editSubmark.rejected]: () => {
             console.log("put Rejected!");
         },
 
         // DELETE
-        [deleteMark.pending]: (state) => {
+        [deleteSubmark.pending]: (state) => {
             return { ...state, pending: true }
         },
-        [deleteMark.fulfilled]: (state, { payload }) => {
-            return { ...state, pending: false, marks: [...state.marks.filter(e => e.ID !== payload.id)] };
+        [deleteSubmark.fulfilled]: (state, { payload }) => {
+            return { ...state, pending: false, submarks: [...state.submarks.filter(e => e.ID !== payload.id)] };
         },
-        [deleteMark.rejected]: () => {
+        [deleteSubmark.rejected]: () => {
             console.log("delete Rejected!");
         },
     },
 });
 
-export const getAllMarks = (state) => state.marks.marks;
-export default markSlice.reducer;
+export const getAllSubmarks = (state) => state.submarks.submarks;
+export default submarkSlice.reducer;

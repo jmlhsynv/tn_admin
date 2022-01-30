@@ -10,6 +10,13 @@ import editCategoryReducer from './Categories/editCategory'
 
 import markReducer from './Marks/marks'
 import newMarkReducer from './Marks/newMarks'
+import editMarkReducer from './Marks/editMark'
+import viewMarkReducer from './Marks/viewMark'
+
+import submarkReducer from './Submarks/submarks'
+import newSubmarkReducer from './Submarks/newSubmark'
+import viewSubmarkReducer from './Submarks/viewSubmark'
+import editSubmarkReducer from './Submarks/editSubmark'
 
 export default configureStore({
 	reducer: {
@@ -24,6 +31,14 @@ export default configureStore({
 
 		// marks
 		marks: markReducer,
-		newMark: newMarkReducer
+		newMark: newMarkReducer,
+		editMark: editMarkReducer,
+		viewMark: viewMarkReducer,
+		
+		// Submarks
+		submarks: submarkReducer,
+		newSubmark: newSubmarkReducer,
+		editSubmark: editSubmarkReducer,
+		viewSubmark: viewSubmarkReducer,
 	}
 })

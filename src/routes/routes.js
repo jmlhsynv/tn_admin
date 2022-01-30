@@ -2,9 +2,10 @@ import Home from "../views/Home"
 import Profile from "../views/Profile"
 import Login from "../views/Login"
 
+import Users from "../views/Users/Users"
 import Categories from "../views/Category/Categories"
 import Marks from "../views/Marks/Marks"
-import Users from "../views/Users/Users"
+import Submarks from "../views/Submarks/Submarks"
 
 export const routes = [
     {
@@ -13,6 +14,13 @@ export const routes = [
         component: Home,
         auth: true,
         admin: false
+    },
+    {
+        path: "/users",
+        exact: true,
+        component: Users,
+        auth: true,
+        admin: true
     },
     {
         path: "/categories",
@@ -25,6 +33,13 @@ export const routes = [
         path: "/marks",
         exact: true,
         component: Marks,
+        auth: true,
+        admin: false
+    },
+    {
+        path: "/submarks",
+        exact: true,
+        component: Submarks,
         auth: true,
         admin: false
     },

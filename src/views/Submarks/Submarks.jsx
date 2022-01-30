@@ -1,30 +1,26 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-
-import { fetchAsyncCategory } from '../../stores/Categories/category';
-
-import { deleteMark, fetchMarks } from '../../stores/Marks/marks';
+import { fetchMarks } from '../../stores/Marks/marks';
+import { fetchSubmarks, deleteSubmark } from '../../stores/Submarks/submarks'
 import { getStatus } from '../../stores/auth';
-
-import { setNewModal } from '../../stores/Marks/newMarks';
-import { setEditModal } from '../../stores/Marks/editMark';
-import { setViewModal } from '../../stores/Marks/viewMark'
-
 import swal from 'sweetalert';
 
-function Marks() {
-  const dispatch = useDispatch()
-  const { marks } = useSelector(state => state.marks)
-	const { status } = useSelector(state => state.auth)
+import { setNewModal } from '../../stores/Submarks/newSubmark';
+import { setEditModal } from '../../stores/Submarks/editSubmark';
+import { setViewModal } from '../../stores/Submarks/viewSubmark'
 
-  useEffect(() => {
-    dispatch(fetchAsyncCategory())
-    dispatch(fetchMarks())
-    dispatch(getStatus())
-  }, [dispatch])
+function Submarks() {
+    const dispatch = useDispatch()
+    const { submarks } = useSelector(state => state.submarks)
+    const { status } = useSelector(state => state.auth)
 
+    useEffect(() => {
+        dispatch(fetchMarks())
+        dispatch(fetchSubmarks())
+        dispatch(getStatus())
+    }, [dispatch])
 
-  // Delete item
+    // Delete item
   const deleteItem = (name, id) => {
     if (status === 'admin') {
       swal({
@@ -36,7 +32,7 @@ function Marks() {
       })
         .then((willDelete) => {
           if (willDelete) {
-            dispatch(deleteMark(id))
+            dispatch(deleteSubmark(id))
 
             swal(`${name} silindi!`, {
               icon: "success",
@@ -47,12 +43,12 @@ function Marks() {
       swal("Yetki yoxdur!", "Silmək üçün adminə müraciət edin!", "error");
     }
   }
-  return (
-    <div>
+    return (
+        <div>
       <div className="main-card mb-3 card">
         <div className="card-body">
           <div className="w-100 d-flex justify-content-between mb-3">
-            <h5 className="card-title">Markalar</h5>
+            <h5 className="card-title">Marka alt kateqoriyaları </h5>
             <button className="btn btn-primary mr-5" onClick={() => dispatch(setNewModal())}>
               <i className="fa fa-fw" aria-hidden="true" title="Copy to use plus"></i>
               Yeni Marka
@@ -62,22 +58,22 @@ function Marks() {
             <thead>
               <tr>
                 <th>#</th>
+                <th>Marka alt kateqoriya kodu</th>
+                <th>Marka alt kateqoriya adı</th>
                 <th>Marka kodu</th>
                 <th>Marka adı</th>
-                <th>Kateqoriya kodu</th>
-                <th>Kateqoriya adı</th>
                 <th style={{ textAlign: "center" }}><i className="pe-7s-edit"> </i></th>
               </tr>
             </thead>
             <tbody>
               {
-                marks && marks.map((index, key) => (
+                submarks && submarks.map((index, key) => (
                   <tr key={key}>
                     <td>{key + 1}</td>
                     <td>{index.CODE}</td>
                     <td>{index.NAME_}</td>
-                    <td>{index.CATEGORY_CODE}</td>
-                    <td>{index.CATEGORY_NAME}</td>
+                    <td>{index.MARK_CODE}</td>
+                    <td>{index.MARK_NAME}</td>
                     <td style={{ width: "20%", textAlign: "center" }}>
                       <div role="group" className="btn-group" data-toggle="buttons">
                         <button type="button" className="btn btn-primary" onClick={ () => dispatch(setViewModal(index))}>
@@ -99,7 +95,7 @@ function Marks() {
         </div>
       </div>
     </div>
-  )
+    )
 }
 
-export default Marks
+export default Submarks

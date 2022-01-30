@@ -25,7 +25,6 @@ export const postAsyncCategory = createAsyncThunk(
       "Authorization": "Bearer "+ localStorage.getItem('token')
     }
     const res = await axios.post(url, postedData, {headers});
-    console.log(res);
     return {
       data: postedData,
       success: res.data
@@ -90,7 +89,6 @@ const categorySlice = createSlice({
       return {...state, pending: true}
     },
     [postAsyncCategory.fulfilled]: (state, {payload}) => {
-      console.log(payload);
       if (payload.success) {
         return { ...state, pending:false,  categories: [...state.categories, {...payload.data, ID: payload.success}] };
       }else{

@@ -14,6 +14,7 @@ import Footer from "./components/Footer";
 import Sidebar from "./components/Sidebar";
 import Modal from "./views/Category/Modal";
 import MarkModal from "./views/Marks/MarkModal";
+import SubmarkModal from "./views/Submarks/SubmarkModal";
 
 
 
@@ -63,6 +64,7 @@ function App() {
 
             <Modal />
             <MarkModal />
+            <SubmarkModal />
 
 
 

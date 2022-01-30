@@ -56,7 +56,7 @@ function Modal({
         e.preventDefault();
         dispatch(postAsyncCategory(inp_new))
         e.target.reset()
-        // dispatch(setNewModal())
+        dispatch(setNewModal())
     }
 
     // EDIT CATEGORY
