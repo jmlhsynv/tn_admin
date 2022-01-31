@@ -8,10 +8,26 @@ import { setViewModal } from '../../stores/Submarks/viewSubmark';
 import axios from "axios";
 import { postSubmark, editSubmark } from '../../stores/Submarks/submarks';
 
+import { useHistory } from "react-router-dom"
+import { logout } from '../../stores/auth';
+import { removeErrors } from '../../stores/Submarks/submarks';
+
 const { REACT_APP_API_URL } = process.env
+
 
 function SubmarkModal() {
     const dispatch = useDispatch()
+
+    const history = useHistory()
+    const { error } = useSelector(state => state.submarks)
+
+    useEffect(() => {
+        if (error === 401) {
+            dispatch(logout())
+            dispatch(removeErrors())
+            history.push('/')
+        }
+    }, [error, dispatch, history])
 
     const { modal } = useSelector(state => state.newSubmark)
     const { marks } = useSelector(state => state.marks)

@@ -9,10 +9,25 @@ import axios from "axios";
 import { postMark } from '../../stores/Marks/marks';
 import { editMark } from '../../stores/Marks/marks';
 
+import { useHistory } from "react-router-dom"
+import { logout } from '../../stores/auth';
+import { removeErrors } from '../../stores/Marks/marks';
+
 const { REACT_APP_API_URL } = process.env
 
 function MarkModal() {
     const dispatch = useDispatch()
+
+	const history = useHistory()
+    const { error } = useSelector(state => state.marks)
+
+    useEffect(() => {
+        if (error === 401) {
+            dispatch(logout())
+            dispatch(removeErrors())
+            history.push('/')
+        }
+    }, [error, dispatch, history])
 
     const { modal } = useSelector(state => state.newMark)
     const { categories } = useSelector(state => state.categories)

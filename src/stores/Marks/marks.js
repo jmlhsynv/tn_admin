@@ -71,7 +71,11 @@ const initialState = {
 const markSlice = createSlice({
     name: "marks",
     initialState,
-    reducers: {},
+    reducers: {
+        removeErrors: state => {
+			state.error = ""
+		}
+    },
     extraReducers: {
         // GET
         [fetchMarks.pending]: (state) => {
@@ -80,8 +84,8 @@ const markSlice = createSlice({
         [fetchMarks.fulfilled]: (state, { payload }) => {
             return { ...state, pending: false, marks: payload, };
         },
-        [fetchMarks.rejected]: () => {
-            console.log("Rejected!");
+        [fetchMarks.rejected]: (state, {payload}) => {
+            return {...state, pending: false, error: 401}
         },
 
         // POST
@@ -104,8 +108,8 @@ const markSlice = createSlice({
             }
 
         },
-        [postMark.rejected]: () => {
-            console.log("post Rejected!");
+        [postMark.rejected]: (state, {payload}) => {
+            return {...state, pending: false, error: 401}
         },
 
 
@@ -114,6 +118,7 @@ const markSlice = createSlice({
             return { ...state, pending: true }
         },
         [editMark.fulfilled]: (state, { payload }) => {
+            console.log(payload);
             return {
                 ...state, pending: false, marks: [
                     ...state.marks.map(e => e.ID === payload.data.ID ?
@@ -123,8 +128,8 @@ const markSlice = createSlice({
                 ]
             };
         },
-        [editMark.rejected]: () => {
-            console.log("put Rejected!");
+        [editMark.rejected]: (state, {payload}) => {
+            return {...state, pending: false, error: 401}
         },
 
         // DELETE
@@ -132,13 +137,21 @@ const markSlice = createSlice({
             return { ...state, pending: true }
         },
         [deleteMark.fulfilled]: (state, { payload }) => {
-            return { ...state, pending: false, marks: [...state.marks.filter(e => e.ID !== payload.id)] };
+            if(payload.success === true){
+                return { ...state, pending: false, marks: [...state.marks.filter(e => e.ID !== payload.id)], error: "success" };
+            }else if(payload.success === false){
+                return {...state, pending: false, error: false}
+            }else{
+                return {...state, pending: false, error: "hasChild"}
+            }
         },
-        [deleteMark.rejected]: () => {
-            console.log("delete Rejected!");
+        [deleteMark.rejected]: (state, {payload}) => {
+            return {...state, pending: false, error: 401}
         },
     },
 });
 
 export const getAllMarks = (state) => state.marks.marks;
+export const { removeErrors } = markSlice.actions
+
 export default markSlice.reducer;

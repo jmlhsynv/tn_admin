@@ -9,18 +9,41 @@ import { setNewModal } from '../../stores/Submarks/newSubmark';
 import { setEditModal } from '../../stores/Submarks/editSubmark';
 import { setViewModal } from '../../stores/Submarks/viewSubmark'
 
+import { useHistory } from "react-router-dom"
+import { logout } from '../../stores/auth';
+import { removeErrors } from '../../stores/Submarks/submarks';
+
 function Submarks() {
-    const dispatch = useDispatch()
-    const { submarks } = useSelector(state => state.submarks)
-    const { status } = useSelector(state => state.auth)
+  const dispatch = useDispatch()
+  const { submarks } = useSelector(state => state.submarks)
+  const { status } = useSelector(state => state.auth)
 
-    useEffect(() => {
-        dispatch(fetchMarks())
-        dispatch(fetchSubmarks())
-        dispatch(getStatus())
-    }, [dispatch])
+  useEffect(() => {
+    dispatch(fetchMarks())
+    dispatch(fetchSubmarks())
+    dispatch(getStatus())
+  }, [dispatch])
 
-    // Delete item
+  const history = useHistory()
+  const { error } = useSelector(state => state.submarks)
+  useEffect(() => {
+
+    if (error === 401) {
+      dispatch(logout())
+      dispatch(removeErrors())
+      history.push('/')
+    } else if (error === false) {
+      swal("Səhv", "Yanlış əməliyyat", "error");
+    } else if (error === "hasChild") {
+      swal("Səhv", "Bu alt markaya aid məhsul olduğu üçün silinə bilməz!", "error");
+    } else if (error === "success") {
+      swal("Silindi", "", "success");
+    }
+
+    dispatch(removeErrors())
+
+  }, [error, dispatch, history])
+  // Delete item
   const deleteItem = (name, id) => {
     if (status === 'admin') {
       swal({
@@ -33,18 +56,14 @@ function Submarks() {
         .then((willDelete) => {
           if (willDelete) {
             dispatch(deleteSubmark(id))
-
-            swal(`${name} silindi!`, {
-              icon: "success",
-            });
           }
         });
     } else {
       swal("Yetki yoxdur!", "Silmək üçün adminə müraciət edin!", "error");
     }
   }
-    return (
-        <div>
+  return (
+    <div>
       <div className="main-card mb-3 card">
         <div className="card-body">
           <div className="w-100 d-flex justify-content-between mb-3">
@@ -76,13 +95,13 @@ function Submarks() {
                     <td>{index.MARK_NAME}</td>
                     <td style={{ width: "20%", textAlign: "center" }}>
                       <div role="group" className="btn-group" data-toggle="buttons">
-                        <button type="button" className="btn btn-primary" onClick={ () => dispatch(setViewModal(index))}>
+                        <button type="button" className="btn btn-primary" onClick={() => dispatch(setViewModal(index))}>
                           <i className="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i>
                         </button>
-                        <button type="button" className="btn btn-success" onClick={ () => dispatch(setEditModal(index))}>
+                        <button type="button" className="btn btn-success" onClick={() => dispatch(setEditModal(index))}>
                           <i className="fa fa-fw" aria-hidden="true" title="Copy to use edit"></i>
                         </button>
-                        <button type="button" className="btn btn-danger" onClick={ () => deleteItem(index.NAME_, index.ID)}>
+                        <button type="button" className="btn btn-danger" onClick={() => deleteItem(index.NAME_, index.ID)}>
                           <i className="fa fa-fw" aria-hidden="true" title="Copy to use trash"></i>
                         </button>
                       </div>
@@ -95,7 +114,7 @@ function Submarks() {
         </div>
       </div>
     </div>
-    )
+  )
 }
 
 export default Submarks

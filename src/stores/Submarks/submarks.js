@@ -70,7 +70,11 @@ const initialState = {
 const submarkSlice = createSlice({
     name: "submarks",
     initialState,
-    reducers: {},
+    reducers: {
+        removeErrors: state => {
+			state.error = ""
+		}
+    },
     extraReducers: {
 
         // GET
@@ -80,8 +84,8 @@ const submarkSlice = createSlice({
         [fetchSubmarks.fulfilled]: (state, { payload }) => {
             return { ...state, pending: false, submarks: payload, };
         },
-        [fetchSubmarks.rejected]: () => {
-            console.log("Rejected!");
+        [fetchSubmarks.rejected]: (state, {payload}) => {
+            return {...state, pending: false, error: 401}
         },
 
         // POST
@@ -104,8 +108,8 @@ const submarkSlice = createSlice({
             }
 
         },
-        [postSubmark.rejected]: () => {
-            console.log("post Rejected!");
+        [postSubmark.rejected]: (state, {payload}) => {
+            return {...state, pending: false, error: 401}
         },
 
 
@@ -123,8 +127,8 @@ const submarkSlice = createSlice({
                 ]
             };
         },
-        [editSubmark.rejected]: () => {
-            console.log("put Rejected!");
+        [editSubmark.rejected]: (state, {payload}) => {
+            return {...state, pending: false, error: 401}
         },
 
         // DELETE
@@ -132,13 +136,21 @@ const submarkSlice = createSlice({
             return { ...state, pending: true }
         },
         [deleteSubmark.fulfilled]: (state, { payload }) => {
-            return { ...state, pending: false, submarks: [...state.submarks.filter(e => e.ID !== payload.id)] };
+            if (payload.success === true) {
+                return { ...state, pending: false, submarks: [...state.submarks.filter(e => e.ID !== payload.id)], error: "success" };   
+            }else if( payload.success === false){
+                return { ...state, pending: false,error: false}
+            }else{
+                return { ...state, pending: false, error: "hasChild"}
+            }
         },
-        [deleteSubmark.rejected]: () => {
-            console.log("delete Rejected!");
+        [deleteSubmark.rejected]: (state, {payload}) => {
+            return {...state, pending: false, error: 401}
         },
     },
 });
 
 export const getAllSubmarks = (state) => state.submarks.submarks;
+export const { removeErrors } = submarkSlice.actions
+
 export default submarkSlice.reducer;

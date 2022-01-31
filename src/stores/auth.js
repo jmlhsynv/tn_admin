@@ -13,7 +13,6 @@ export const getStatus = createAsyncThunk(
 		}
 
 		let data = null
-
 		await axios.put(REACT_APP_API_URL + "Login", userData, {headers})
 		.then(res => data = res.data[0])
 		.catch(err => data = err.response.status)

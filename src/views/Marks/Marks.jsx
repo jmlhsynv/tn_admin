@@ -12,10 +12,14 @@ import { setViewModal } from '../../stores/Marks/viewMark'
 
 import swal from 'sweetalert';
 
+import { useHistory } from "react-router-dom"
+import { logout } from '../../stores/auth';
+import { removeErrors } from '../../stores/Marks/marks';
+
 function Marks() {
   const dispatch = useDispatch()
   const { marks } = useSelector(state => state.marks)
-	const { status } = useSelector(state => state.auth)
+  const { status } = useSelector(state => state.auth)
 
   useEffect(() => {
     dispatch(fetchAsyncCategory())
@@ -23,6 +27,25 @@ function Marks() {
     dispatch(getStatus())
   }, [dispatch])
 
+  const history = useHistory()
+  const { error } = useSelector(state => state.marks)
+  useEffect(() => {
+
+    if (error === 401) {
+      dispatch(logout())
+      dispatch(removeErrors())
+      history.push('/')
+    } else if (error === false) {
+      swal("Səhv", "Yanlış əməliyyat", "error");
+    } else if (error === "hasChild") {
+      swal("Səhv", "Bu markaya aid alt marka olduğu üçün silinə bilməz!", "error");
+    } else if (error === "success") {
+      swal("Silindi", "", "success");
+    }
+
+    dispatch(removeErrors())
+
+  }, [error, dispatch, history])
 
   // Delete item
   const deleteItem = (name, id) => {
@@ -37,10 +60,6 @@ function Marks() {
         .then((willDelete) => {
           if (willDelete) {
             dispatch(deleteMark(id))
-
-            swal(`${name} silindi!`, {
-              icon: "success",
-            });
           }
         });
     } else {
@@ -80,13 +99,13 @@ function Marks() {
                     <td>{index.CATEGORY_NAME}</td>
                     <td style={{ width: "20%", textAlign: "center" }}>
                       <div role="group" className="btn-group" data-toggle="buttons">
-                        <button type="button" className="btn btn-primary" onClick={ () => dispatch(setViewModal(index))}>
+                        <button type="button" className="btn btn-primary" onClick={() => dispatch(setViewModal(index))}>
                           <i className="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i>
                         </button>
-                        <button type="button" className="btn btn-success" onClick={ () => dispatch(setEditModal(index))}>
+                        <button type="button" className="btn btn-success" onClick={() => dispatch(setEditModal(index))}>
                           <i className="fa fa-fw" aria-hidden="true" title="Copy to use edit"></i>
                         </button>
-                        <button type="button" className="btn btn-danger" onClick={ () => deleteItem(index.NAME_, index.ID)}>
+                        <button type="button" className="btn btn-danger" onClick={() => deleteItem(index.NAME_, index.ID)}>
                           <i className="fa fa-fw" aria-hidden="true" title="Copy to use trash"></i>
                         </button>
                       </div>

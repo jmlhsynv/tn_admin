@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { setModal } from "../../stores/Categories/viewCategory";
 import { connect } from 'react-redux'
-import { useDispatch } from 'react-redux';
 import { setNewModal } from '../../stores/Categories/newCategory';
 import { setEditModal } from '../../stores/Categories/editCategory';
 
 import { postAsyncCategory } from '../../stores/Categories/category';
 import { editAsyncCategory } from '../../stores/Categories/category';
+
+import { useHistory } from "react-router-dom"
+import { useDispatch } from 'react-redux';
+import { logout } from '../../stores/auth';
+import { removeErrors } from '../../stores/Categories/category';
+
 import axios from "axios";
 
-const {REACT_APP_API_URL} = process.env
+const { REACT_APP_API_URL } = process.env
 
 const mapStateToProps = state => ({
     categories: state.categories.categories,
+    error: state.categories.error,
     // view Category
     category_view_modal: state.viewCategory.modal,
     category_view_detail: state.viewCategory.detail,
@@ -27,6 +33,7 @@ const mapStateToProps = state => ({
 
 function Modal({
     categories,
+    error,
     category_view_modal,
     category_view_detail,
     category_new_modal,
@@ -35,16 +42,25 @@ function Modal({
 }) {
 
     const dispatch = useDispatch()
+	const history = useHistory()
+    useEffect(() => {
+        if (error === 401) {
+            dispatch(logout())
+            dispatch(removeErrors())
+            history.push('/')
+        }
+    }, [error, dispatch, history])
+
     const [code, setCode] = useState("")
     // ADD NEW CATEGORY
     const [inp_new, setInp_new] = useState({});
-    useEffect( () => {
+    useEffect(() => {
         const headers = {
             "Content-Type": "application/json",
-            "Authorization": "Bearer "+ localStorage.getItem('token')
+            "Authorization": "Bearer " + localStorage.getItem('token')
         }
-        axios.post(REACT_APP_API_URL+"NewCode", {MODULE: "CATEGORIES"}, {headers}).then(res => setCode(res.data[0].CODE))
-    },[categories])
+        axios.post(REACT_APP_API_URL + "NewCode", { MODULE: "CATEGORIES" }, { headers }).then(res => setCode(res.data[0].CODE))
+    }, [categories])
 
     const handleChange = (e) => {
         let value = e.target.value;
