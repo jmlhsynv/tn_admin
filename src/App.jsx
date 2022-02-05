@@ -15,6 +15,7 @@ import Sidebar from "./components/Sidebar";
 import Modal from "./views/Category/Modal";
 import MarkModal from "./views/Marks/MarkModal";
 import SubmarkModal from "./views/Submarks/SubmarkModal";
+import UnitModal from "./views/Units/UnitModal";
 
 
 
@@ -65,6 +66,7 @@ function App() {
             <Modal />
             <MarkModal />
             <SubmarkModal />
+            <UnitModal />
 
 
 

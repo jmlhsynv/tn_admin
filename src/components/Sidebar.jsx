@@ -103,13 +103,13 @@ function Sidebar() {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="#">
+                                    <NavLink to="/units">
                                         <i className="metismenu-icon">
                                         </i>Vahidlər
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="#">
+                                    <NavLink to="/items">
                                         <i className="metismenu-icon">
                                         </i>Məhsullar
                                     </NavLink>

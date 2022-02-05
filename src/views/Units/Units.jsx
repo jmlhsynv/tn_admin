@@ -1,46 +1,29 @@
 import React, { useEffect } from 'react'
-
 import { useSelector, useDispatch } from 'react-redux';
-
-import { fetchAsyncCategory } from '../../stores/Categories/category';
-import { deleteAsyncCategory } from '../../stores/Categories/category';
+import { fetchUnits, deleteUnit } from '../../stores/Units/units'
 import { getStatus } from '../../stores/auth';
+import swal from 'sweetalert';
 
-import { setModal } from '../../stores/Categories/viewCategory';
-import { setNewModal } from '../../stores/Categories/newCategory';
-import { setEditModal } from '../../stores/Categories/editCategory';
+import { setNewModal } from '../../stores/Units/newUnit';
+import { setEditModal } from '../../stores/Units/editUnit';
+import { setViewModal } from '../../stores/Units/viewUnit'
 
 import { useHistory } from "react-router-dom"
 import { logout } from '../../stores/auth';
-import { removeErrors } from '../../stores/Categories/category';
+import { removeErrors } from '../../stores/Units/units';
 
-import swal from 'sweetalert';
-
-
-function Categories() {
+function Units() {
     const dispatch = useDispatch()
-    const { categories } = useSelector(state => state.categories)
+    const { units } = useSelector(state => state.units)
     const { status } = useSelector(state => state.auth)
 
     useEffect(() => {
-        dispatch(fetchAsyncCategory())
+        dispatch(fetchUnits())
         dispatch(getStatus())
     }, [dispatch])
 
-
-    const viewCategory = (index) => {
-        dispatch(setModal(index))
-    }
-
-    const newCategory = () => {
-        dispatch(setNewModal())
-    }
-
-    const editCategory = (index) => {
-        dispatch(setEditModal(index))
-    }
     const history = useHistory()
-    const { error } = useSelector(state => state.categories)
+    const { error } = useSelector(state => state.units)
     useEffect(() => {
 
         if (error === 401) {
@@ -50,16 +33,17 @@ function Categories() {
         } else if (error === false) {
             swal("Səhv", "Yanlış əməliyyat", "error");
         } else if (error === "hasChild") {
-            swal("Səhv", "Bu kateqoriyaya aid marka olduğu üçün silinə bilməz!", "error");
-        } else if(error === "success"){
-            swal("Silindi",  "","success");
+            swal("Səhv", "Bu vahidə aid məhsul olduğu üçün silinə bilməz!", "error");
+        } else if (error === "success") {
+            swal("Silindi", "", "success");
         }
-        
+
         dispatch(removeErrors())
 
     }, [error, dispatch, history])
 
-    const deleteCategory = (name, id) => {
+    // Delete item
+    const deleteItem = (name, id) => {
         if (status === 'admin') {
             swal({
                 title: `${name} silinəcək!`,
@@ -70,51 +54,49 @@ function Categories() {
             })
                 .then((willDelete) => {
                     if (willDelete) {
-                        dispatch(deleteAsyncCategory(id))
+                        dispatch(deleteUnit(id))
                     }
                 });
         } else {
             swal("Yetki yoxdur!", "Silmək üçün adminə müraciət edin!", "error");
         }
     }
-
     return (
         <div>
-
             <div className="main-card mb-3 card">
                 <div className="card-body">
                     <div className="w-100 d-flex justify-content-between mb-3">
-                        <h5 className="card-title">Kateqoriyalar</h5>
-                        <button className="btn btn-primary mr-5" onClick={() => newCategory()}>
+                        <h5 className="card-title">Vahidlər </h5>
+                        <button className="btn btn-primary mr-5" onClick={() => dispatch(setNewModal())}>
                             <i className="fa fa-fw" aria-hidden="true" title="Copy to use plus"></i>
-                            Yeni Kateqoriya
+                            Yeni Vahid
                         </button>
                     </div>
                     <table className="mb-0 table">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Kateqoriya kodu</th>
-                                <th>Kateqoriya adı</th>
+                                <th>Vahid kodu</th>
+                                <th>Miqdar</th>
                                 <th style={{ textAlign: "center" }}><i className="pe-7s-edit"> </i></th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                categories && categories.map((index, key) => (
+                                units && units.map((index, key) => (
                                     <tr key={key}>
-                                        <th scope="row">{key + 1}</th>
+                                        <td>{key + 1}</td>
                                         <td>{index.CODE}</td>
-                                        <td>{index.NAME_} </td>
+                                        <td>{index.AMOUNT}</td>
                                         <td style={{ width: "20%", textAlign: "center" }}>
                                             <div role="group" className="btn-group" data-toggle="buttons">
-                                                <button type="button" className="btn btn-primary" onClick={() => viewCategory(index)}>
+                                                <button type="button" className="btn btn-primary" onClick={() => dispatch(setViewModal(index))}>
                                                     <i className="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i>
                                                 </button>
-                                                <button type="button" className="btn btn-success" onClick={() => editCategory(index)}>
+                                                <button type="button" className="btn btn-success" onClick={() => dispatch(setEditModal(index))}>
                                                     <i className="fa fa-fw" aria-hidden="true" title="Copy to use edit"></i>
                                                 </button>
-                                                <button type="button" className="btn btn-danger" onClick={() => deleteCategory(index.NAME_, index.ID)}>
+                                                <button type="button" className="btn btn-danger" onClick={() => deleteItem(index.CODE, index.ID)}>
                                                     <i className="fa fa-fw" aria-hidden="true" title="Copy to use trash"></i>
                                                 </button>
                                             </div>
@@ -126,11 +108,8 @@ function Categories() {
                     </table>
                 </div>
             </div>
-
-
-
         </div>
     )
 }
 
-export default Categories
+export default Units

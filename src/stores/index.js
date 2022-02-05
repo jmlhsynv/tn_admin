@@ -18,6 +18,11 @@ import newSubmarkReducer from './Submarks/newSubmark'
 import viewSubmarkReducer from './Submarks/viewSubmark'
 import editSubmarkReducer from './Submarks/editSubmark'
 
+import unitReducer from './Units/units'
+import newUnitReducer from './Units/newUnit'
+import viewUnitReducer from './Units/viewUnit'
+import editUnitReducer from './Units/editUnit'
+ 
 export default configureStore({
 	reducer: {
 		auth: authReducer,
@@ -40,5 +45,11 @@ export default configureStore({
 		newSubmark: newSubmarkReducer,
 		editSubmark: editSubmarkReducer,
 		viewSubmark: viewSubmarkReducer,
+
+		// Units
+		units: unitReducer,
+		newUnit: newUnitReducer,
+		editUnit: editUnitReducer,
+		viewUnit: viewUnitReducer,
 	}
 })
