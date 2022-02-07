@@ -16,7 +16,7 @@ function UnitModal() {
   const dispatch = useDispatch()
 
   const history = useHistory()
-  const { error } = useSelector(state => state.submarks)
+  const { error } = useSelector(state => state.units)
 
   useEffect(() => {
     if (error === 401) {

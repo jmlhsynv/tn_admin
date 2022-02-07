@@ -16,6 +16,7 @@ import Modal from "./views/Category/Modal";
 import MarkModal from "./views/Marks/MarkModal";
 import SubmarkModal from "./views/Submarks/SubmarkModal";
 import UnitModal from "./views/Units/UnitModal";
+import ItemModal from "./views/Items/ItemModal";
 
 
 
@@ -67,7 +68,7 @@ function App() {
             <MarkModal />
             <SubmarkModal />
             <UnitModal />
-
+            <ItemModal />
 
 
           </div>

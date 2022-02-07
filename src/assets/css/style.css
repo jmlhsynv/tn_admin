@@ -534,3 +534,12 @@ a:focus {
   }
 }
 /* Loading */
+
+
+/* Custom */
+@media (min-width: 992px){
+  .custom-lg{
+      max-width: 1200px !important;
+      width: 100% !important;
+  }
+}

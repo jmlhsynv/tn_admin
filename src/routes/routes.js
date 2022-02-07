@@ -7,6 +7,7 @@ import Categories from "../views/Category/Categories"
 import Marks from "../views/Marks/Marks"
 import Submarks from "../views/Submarks/Submarks"
 import Units from "../views/Units/Units"
+import Items from "../views/Items/Items"
 
 export const routes = [
     {
@@ -48,6 +49,13 @@ export const routes = [
         path: "/units",
         exact: true,
         component: Units,
+        auth: true,
+        admin: false
+    },
+    {
+        path: "/items",
+        exact: true,
+        component: Items,
         auth: true,
         admin: false
     },

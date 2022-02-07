@@ -22,6 +22,9 @@ import unitReducer from './Units/units'
 import newUnitReducer from './Units/newUnit'
 import viewUnitReducer from './Units/viewUnit'
 import editUnitReducer from './Units/editUnit'
+
+import itemReducer from './Items/items'
+import viewItemReducer from './Items/viewItem'
  
 export default configureStore({
 	reducer: {
@@ -51,5 +54,9 @@ export default configureStore({
 		newUnit: newUnitReducer,
 		editUnit: editUnitReducer,
 		viewUnit: viewUnitReducer,
+
+		// Items
+		items: itemReducer,
+		viewItem: viewItemReducer,
 	}
 })
