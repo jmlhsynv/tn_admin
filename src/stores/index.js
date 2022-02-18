@@ -25,7 +25,8 @@ import editUnitReducer from './Units/editUnit'
 
 import itemReducer from './Items/items'
 import viewItemReducer from './Items/viewItem'
- 
+import newItemReducer from './Items/newItem'
+
 export default configureStore({
 	reducer: {
 		auth: authReducer,
@@ -58,5 +59,6 @@ export default configureStore({
 		// Items
 		items: itemReducer,
 		viewItem: viewItemReducer,
+		newItem: newItemReducer,
 	}
 })

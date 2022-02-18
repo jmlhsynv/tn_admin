@@ -6,6 +6,7 @@ import { getStatus } from '../../stores/auth';
 import swal from 'sweetalert';
 
 import { setViewModal } from '../../stores/Items/viewItem'
+import { setNewModal } from '../../stores/Items/newItem';
 
 import { useHistory } from "react-router-dom"
 import { logout } from '../../stores/auth';
@@ -73,7 +74,7 @@ function Items() {
         <div className="card-body">
           <div className="w-100 d-flex justify-content-between mb-3">
             <h5 className="card-title">Məhsullar </h5>
-            <button className="btn btn-primary mr-5" >
+            <button className="btn btn-primary mr-5" onClick={() => dispatch(setNewModal())}>
               <i className="fa fa-fw" aria-hidden="true" title="Copy to use plus"></i>
               Yeni Məhsul
             </button>
