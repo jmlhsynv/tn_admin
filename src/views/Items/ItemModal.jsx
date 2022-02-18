@@ -93,6 +93,41 @@ function ItemModal() {
     const [edvType, setEdvType] = useState(false)
     const [webStatus, setWebStatus] = useState(false)
     // ===========
+
+    // handle color change
+    const [colorList, setColorList] = useState([{ NAME_: "", CODE: "" }]);
+    const handleColorChange = (e, index) => {
+        const { name, value } = e.target;
+        const list = [...colorList];
+        list[index][name] = value;
+        setColorList(list);
+    };
+    const handleColorRemove = index => {
+        const list = [...colorList];
+        list.splice(index, 1);
+        setColorList(list);
+    };
+    const handleAddColor = () => {
+        setColorList([...colorList, { NAME_: "", CODE: "" }]);
+    };
+
+    // handle size change
+    const [sizeList, setSizeList] = useState([{ NAME_: "", CODE: "" }]);
+    const handleSizeChange = (e, index) => {
+        const { name, value } = e.target;
+        const list = [...sizeList];
+        list[index][name] = value;
+        setSizeList(list);
+    };
+    const handleSizeRemove = index => {
+        const list = [...sizeList];
+        list.splice(index, 1);
+        setSizeList(list);
+    };
+    const handleAddSize = () => {
+        setSizeList([...sizeList, { NAME_: "", CODE: "" }]);
+    };
+
     return (
         <>
             {/* View Item */}
@@ -387,10 +422,132 @@ function ItemModal() {
                                     </div>
                                 </div>
                                 <div className={newTab.activeTab === 2 ? "tab-pane fade show active" : "tab-pane fade"}>
-                                    2
+                                    <div className="col-12 mb-3">
+                                        <div className="row justify-content-end">
+                                            <div className="col-2">
+                                                <button className="btn btn-primary btn-block" onClick={handleAddColor}>
+                                                    <i className="fa fa-fw" aria-hidden="true" title="Copy to use plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {colorList.map((index, key) => {
+                                        return (
+                                            <div className="col-12 mt-2" key={key}>
+                                                <div className="row">
+                                                    <div className={colorList.length > 1 ? "col-5" : "col-6"}>
+                                                        <div className="input-group">
+                                                            <div className="input-group-prepend">
+                                                                <span className="input-group-text">Rəng Adı :</span>
+                                                            </div>
+                                                            <input
+                                                                name="NAME_"
+                                                                className='form-control'
+                                                                value={index.NAME_}
+                                                                onChange={e => handleColorChange(e, key)}
+                                                            />
+                                                        </div>
+
+                                                    </div>
+                                                    <div className={colorList.length > 1 ? "col-5" : "col-6"}>
+                                                        <div className="input-group">
+                                                            <div className="input-group-prepend">
+                                                                <span className="input-group-text">Rəng Kodu :</span>
+                                                            </div>
+                                                            <input
+                                                                className="form-control"
+                                                                name="CODE"
+                                                                value={index.CODE}
+                                                                onChange={e => handleColorChange(e, key)}
+                                                            />
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div className="col-2">
+                                                        <div className="w-100">
+                                                            {
+                                                                colorList.length !== 1 &&
+                                                                <button
+                                                                    className="btn btn-danger btn-block"
+                                                                    onClick={() => handleColorRemove(key)}>
+                                                                    <i className="fa fa-fw" aria-hidden="true" title="Copy to use trash"></i>
+                                                                </button>
+                                                            }
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+                                            </div>
+                                        );
+                                    })}
+                                    <div style={{ marginTop: 20 }}>{JSON.stringify(colorList)}</div>
                                 </div>
                                 <div className={newTab.activeTab === 3 ? "tab-pane fade show active" : "tab-pane fade"}>
-                                    3
+                                    <div className="col-12 mb-3">
+                                        <div className="row justify-content-end">
+                                            <div className="col-2">
+                                                <button className="btn btn-primary btn-block" onClick={handleAddSize}>
+                                                    <i className="fa fa-fw" aria-hidden="true" title="Copy to use plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {sizeList.map((index, key) => {
+                                        return (
+                                            <div className="col-12 mt-2" key={key}>
+                                                <div className="row">
+                                                    <div className={sizeList.length > 1 ? "col-5" : "col-6"}>
+                                                        <div className="input-group">
+                                                            <div className="input-group-prepend">
+                                                                <span className="input-group-text">Ölçü Adı :</span>
+                                                            </div>
+                                                            <input
+                                                                name="NAME_"
+                                                                className='form-control'
+                                                                value={index.NAME_}
+                                                                onChange={e => handleSizeChange(e, key)}
+                                                            />
+                                                        </div>
+
+                                                    </div>
+                                                    <div className={sizeList.length > 1 ? "col-5" : "col-6"}>
+                                                        <div className="input-group">
+                                                            <div className="input-group-prepend">
+                                                                <span className="input-group-text">Ölçü Kodu :</span>
+                                                            </div>
+                                                            <input
+                                                                className="form-control"
+                                                                name="CODE"
+                                                                value={index.CODE}
+                                                                onChange={e => handleSizeChange(e, key)}
+                                                            />
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div className="col-2">
+                                                        <div className="w-100">
+                                                            {
+                                                                sizeList.length !== 1 &&
+                                                                <button
+                                                                    className="btn btn-danger btn-block"
+                                                                    onClick={() => handleSizeRemove(key)}>
+                                                                    <i className="fa fa-fw" aria-hidden="true" title="Copy to use trash"></i>
+                                                                </button>
+                                                            }
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+                                            </div>
+                                        );
+                                    })}
+                                    <div style={{ marginTop: 20 }}>{JSON.stringify(sizeList)}</div>
                                 </div>
                                 <div className={newTab.activeTab === 4 ? "tab-pane fade show active" : "tab-pane fade"}>
                                     4
