@@ -16,7 +16,22 @@ export const fetchItems = createAsyncThunk(
         return response.data;
     }
 );
-
+export const postItem = createAsyncThunk(
+    "items/postItem",
+    async (postedData) => {
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem('token')
+        }
+        const res = await axios.post(url, postedData, { headers });
+        console.log(postedData);
+        console.log(res.data[0]);
+        return {
+            data: postedData,
+            success: res.data[0]
+        };
+    }
+);
 export const deleteItem = createAsyncThunk(
     "items/deleteItem",
     async (id) => {
@@ -35,7 +50,7 @@ export const deleteItem = createAsyncThunk(
 const initialState = {
     pending: false,
     error: "",
-    items: []
+    items: [],
 };
 
 const itemSlice = createSlice({
@@ -58,6 +73,20 @@ const itemSlice = createSlice({
             return {...state, pending: false, error: 401}
         },
 
+        // POST
+        [postItem.pending]: (state) => {
+            return { ...state, pending: true }
+        },
+        [postItem.fulfilled]: (state, { payload }) => {
+            if (payload.success) {
+                return { ...state, pending:false,  items: [...state.items, payload.success ] };
+            } else {
+                return { ...state, pending: false, error: payload.success }
+            }
+        },
+        [postItem.rejected]: (state, {payload}) => {
+            return {...state, pending: false, error: 401}
+        },
         
         // DELETE
         [deleteItem.pending]: (state) => {
@@ -82,3 +111,23 @@ export const getAllItems = (state) => state.units.units;
 export const { removeErrors } = itemSlice.actions
 
 export default itemSlice.reducer;
+
+
+// "prices": [
+//     {
+//         "ID": 0,
+//         "ITEM_ID": 0,
+//         "PTYPE_": 1,
+//         "PRICE": 10,
+//         "EDV_TYPE": 1,
+//         "EDV_PER": 18.0,
+//         "SIZE_ID": 0,
+//         "COLOR_ID": 0,
+    // "COLOR_CODE":"" ,   
+            // "SIZE_CODE":"" ,
+//         "NOTE_": "121212",
+//         "BEG_DATE": "2022-01-01",
+//         "END_DATE": "2022-12-31",
+//         "USER_ID": 1
+//     }
+// ]
