@@ -145,42 +145,64 @@ function ItemModal() {
         list.splice(index, 1);
         setPriceList(list);
     };
+    const handleAddPrice = () => {
+        setPriceList([...priceList,
+        {
+            ID: 0,
+            ITEM_ID: 0,
+            PTYPE_: 1,
+            PRICE: 0,
+            EDV_TYPE: 1,
+            EDV_PER: 0,
+            SIZE_ID: 0,
+            COLOR_ID: 0,
+            SIZE_CODE: "",
+            SIZE_NAME: "",
+            COLOR_CODE: "",
+            COLOR_NAME: "",
+            NOTE_: "",
+            BEG_DATE: "",
+            END_DATE: "",
+            USER_ID: 1
+        }
+        ])
+    }
 
-    useEffect(() => {
-        let prices = colorList.map(c => (
-            sizeList.map(s => (
-                {
-                    ID: 0,
-                    ITEM_ID: 0,
-                    PTYPE_: 1,
-                    PRICE: 0,
-                    EDV_TYPE: 1,
-                    EDV_PER: 0,
-                    SIZE_ID: 0,
-                    COLOR_ID: 0,
-                    SIZE_CODE: s.CODE,
-                    SIZE_NAME: s.NAME_,
-                    COLOR_CODE: c.CODE,
-                    COLOR_NAME: c.NAME_,
-                    NOTE_: "",
-                    BEG_DATE: "",
-                    END_DATE: "",
-                    USER_ID: 1
-                }
-            ))
-        ))
-        let merged = [].concat.apply([], prices);
+    // useEffect(() => {
+    //     let prices = colorList.map(c => (
+    //         sizeList.map(s => (
+    //             {
+    //                 ID: 0,
+    //                 ITEM_ID: 0,
+    //                 PTYPE_: 1,
+    //                 PRICE: 0,
+    //                 EDV_TYPE: 1,
+    //                 EDV_PER: 0,
+    //                 SIZE_ID: 0,
+    //                 COLOR_ID: 0,
+    //                 SIZE_CODE: s.CODE,
+    //                 SIZE_NAME: s.NAME_,
+    //                 COLOR_CODE: c.CODE,
+    //                 COLOR_NAME: c.NAME_,
+    //                 NOTE_: "",
+    //                 BEG_DATE: "",
+    //                 END_DATE: "",
+    //                 USER_ID: 1
+    //             }
+    //         ))
+    //     ))
+    //     let merged = [].concat.apply([], prices);
 
-        setPriceList(merged);
+    //     setPriceList(merged);
 
-    }, [sizeList, colorList])
+    // }, [sizeList, colorList])
 
     // new data
     const [product, setProduct] = useState({})
     const handleInput = (e) => {
         let name = e.target.name
         let val = e.target.value
-        setProduct({ ...product, [name]: name ==="EDV_PER" ? parseFloat(val) : val })
+        setProduct({ ...product, [name]: name === "EDV_PER" ? parseFloat(val) : val })
     }
 
     const handleSubmit = (e) => {
@@ -702,6 +724,15 @@ function ItemModal() {
                                         5
                                     </div>
                                     <div className={newTab.activeTab === 6 ? "tab-pane fade show active" : "tab-pane fade"}>
+                                        <div className="col-12 mb-3">
+                                            <div className="row justify-content-end">
+                                                <div className="col-2">
+                                                    <button className="btn btn-primary btn-block" type='button' onClick={handleAddPrice}>
+                                                        <i className="fa fa-fw" aria-hidden="true" title="Copy to use plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                         {
                                             priceList.map((index, key) => {
                                                 return (
@@ -720,21 +751,23 @@ function ItemModal() {
                                                             }
                                                             <div className="input-box">
                                                                 <label>Rəng adi</label>
-                                                                <input
-                                                                    className='form-control w-100px'
-                                                                    value={index.COLOR_NAME}
-                                                                    disabled
-                                                                    readOnly
-                                                                />
+                                                                <select name="" id="" className='form-control'>
+                                                                    {
+                                                                        colorList.map((index, key) => (
+                                                                            <option value={index.NAME_}>{index.NAME_}</option>
+                                                                        ))
+                                                                    }
+                                                                </select>
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>Ölçü adi</label>
-                                                                <input
-                                                                    className='form-control w-100px'
-                                                                    value={index.SIZE_NAME}
-                                                                    disabled
-                                                                    readOnly
-                                                                />
+                                                                <select name="" id="" className='form-control'>
+                                                                    {
+                                                                        sizeList.map((index, key) => (
+                                                                            <option value={index.NAME_}>{index.NAME_}</option>
+                                                                        ))
+                                                                    }
+                                                                </select>
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>ƏDV Tipi</label>
