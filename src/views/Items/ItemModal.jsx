@@ -130,39 +130,85 @@ function ItemModal() {
         setSizeList([...sizeList, { ID: 0, ITEM_ID: 0, USER_ID: 1, NAME_: "", CODE: "" }]);
     };
 
+
+    // priceList
+    const [priceList, setPriceList] = useState([])
+    const handlePriceChange = (e, index) => {
+        const { name, value } = e.target
+        const list = [...priceList]
+        list[index][name] = name === "EDV_PER" || "PRICE" ? parseFloat(value) : value
+        setPriceList(list)
+        console.log(priceList);
+    }
+    const handlePriceRemove = index => {
+        const list = [...priceList];
+        list.splice(index, 1);
+        setPriceList(list);
+    };
+
+    useEffect(() => {
+        let prices = colorList.map(c => (
+            sizeList.map(s => (
+                {
+                    ID: 0,
+                    ITEM_ID: 0,
+                    PTYPE_: 1,
+                    PRICE: 0,
+                    EDV_TYPE: 1,
+                    EDV_PER: 0,
+                    SIZE_ID: 0,
+                    COLOR_ID: 0,
+                    SIZE_CODE: s.CODE,
+                    SIZE_NAME: s.NAME_,
+                    COLOR_CODE: c.CODE,
+                    COLOR_NAME: c.NAME_,
+                    NOTE_: "",
+                    BEG_DATE: "",
+                    END_DATE: "",
+                    USER_ID: 1
+                }
+            ))
+        ))
+        let merged = [].concat.apply([], prices);
+
+        setPriceList(merged);
+
+    }, [sizeList, colorList])
+
     // new data
     const [product, setProduct] = useState({})
     const handleInput = (e) => {
         let name = e.target.name
         let val = e.target.value
-        setProduct({ ...product, [name]: val })
+        setProduct({ ...product, [name]: name ==="EDV_PER" ? parseFloat(val) : val })
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(postItem(
-            {
-                ...product,
-                ID: 0,
-                STATUS_: status,
-                CODE: code,
-                CATEGORY_ID: categorySelect,
-                MARK_ID: markSelect,
-                SUBMARK_ID: submarkSelect,
-                UNIT_ID: unitSelect,
-                EDV_TYPE: edvType ? 1 : 2,
-                WEB_STATUS: webStatus,
-                PICTURE_URL: "C:\\Pictures\\Discount.jpg",
-                PICTURE_URL2: "C:\\Pictures\\Discount.jpg",
-                PICTURE_URL3: "C:\\Pictures\\Discount.jpg",
-                PICTURE_URL4: "C:\\Pictures\\Discount.jpg",
-                PICTURE_URL5: "C:\\Pictures\\Discount.jpg",
-                USER_ID: 0,
-                sizes: sizeList,
-                colors: colorList,
-                prices: []
-            }
-        ))
+        console.log(priceList);
+        // dispatch(postItem(
+        //     {
+        //         ...product,
+        //         ID: 0,
+        //         STATUS_: status,
+        //         CODE: code,
+        //         CATEGORY_ID: categorySelect,
+        //         MARK_ID: markSelect,
+        //         SUBMARK_ID: submarkSelect,
+        //         UNIT_ID: unitSelect,
+        //         EDV_TYPE: edvType ? 1 : 2,
+        //         WEB_STATUS: webStatus,
+        //         PICTURE_URL: "C:\\Pictures\\Discount.jpg",
+        //         PICTURE_URL2: "C:\\Pictures\\Discount.jpg",
+        //         PICTURE_URL3: "C:\\Pictures\\Discount.jpg",
+        //         PICTURE_URL4: "C:\\Pictures\\Discount.jpg",
+        //         PICTURE_URL5: "C:\\Pictures\\Discount.jpg",
+        //         USER_ID: 0,
+        //         sizes: sizeList,
+        //         colors: colorList,
+        //         prices: priceList
+        //     }
+        // ))
         e.target.reset()
         dispatch(setNewModal())
 
@@ -173,7 +219,7 @@ function ItemModal() {
             {/* View Item */}
             <div className={viewModal ? "modal fade bd-example-modal-lg show" : "modal fade bd-example-modal-lg"}
                 tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-lg ">
+                <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLongTitle">
@@ -348,7 +394,7 @@ function ItemModal() {
             {/* New Item */}
             <div className={newModal ? "modal fade bd-example-modal-lg show" : "modal fade bd-example-modal-lg"}
                 tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-lg ">
+                <div className="modal-dialog modal-lg custom-lg">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLongTitle">
@@ -364,127 +410,129 @@ function ItemModal() {
                             <div className="modal-body">
                                 <ul className="nav nav-tabs" id="myTab" role="tablist">
                                     <li className="nav-item">
-                                        <button className={newTab.activeTab === 1 ? "nav-link active" : "nav-link "} onClick={() => setNewTab({ activeTab: 1 })}>Ümumi məlumatlar</button>
+                                        <button className={newTab.activeTab === 1 ? "nav-link active" : "nav-link "} type="button" onClick={() => setNewTab({ activeTab: 1 })}>Ümumi məlumatlar</button>
                                     </li>
                                     <li className="nav-item ml-3">
-                                        <button className={newTab.activeTab === 2 ? "nav-link active" : "nav-link "} onClick={() => setNewTab({ activeTab: 2 })}>Rənglər</button>
+                                        <button className={newTab.activeTab === 2 ? "nav-link active" : "nav-link "} type="button" onClick={() => setNewTab({ activeTab: 2 })}>Rənglər</button>
                                     </li>
                                     <li className="nav-item ml-3">
-                                        <button className={newTab.activeTab === 3 ? "nav-link active" : "nav-link "} onClick={() => setNewTab({ activeTab: 3 })}>Ölçülər</button>
+                                        <button className={newTab.activeTab === 3 ? "nav-link active" : "nav-link "} type="button" onClick={() => setNewTab({ activeTab: 3 })}>Ölçülər</button>
                                     </li>
                                     <li className="nav-item ml-3">
-                                        <button className={newTab.activeTab === 4 ? "nav-link active" : "nav-link "} onClick={() => setNewTab({ activeTab: 4 })}>Qeydlər</button>
+                                        <button className={newTab.activeTab === 4 ? "nav-link active" : "nav-link "} type="button" onClick={() => setNewTab({ activeTab: 4 })}>Qeydlər</button>
                                     </li>
                                     <li className="nav-item ml-3">
-                                        <button className={newTab.activeTab === 5 ? "nav-link active" : "nav-link "} onClick={() => setNewTab({ activeTab: 5 })}>Şəkillər</button>
+                                        <button className={newTab.activeTab === 5 ? "nav-link active" : "nav-link "} type="button" onClick={() => setNewTab({ activeTab: 5 })}>Şəkillər</button>
                                     </li>
                                     <li className="nav-item ml-3">
-                                        <button className={newTab.activeTab === 6 ? "nav-link active" : "nav-link "} onClick={() => setNewTab({ activeTab: 6 })}> Qiymətlər</button>
+                                        <button className={newTab.activeTab === 6 ? "nav-link active" : "nav-link "} type="button" onClick={() => setNewTab({ activeTab: 6 })}> Qiymətlər</button>
                                     </li>
                                 </ul>
                                 <div className="tab-content" id="myTabContent">
                                     <div className={newTab.activeTab === 1 ? "tab-pane fade show active" : "tab-pane fade"}>
-                                        <div className="row">
-                                            <div className="col-12 col-md-6">
-                                                <div className="input-group">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">Məhsul  adı :</span>
+                                        <div className="col-12">
+                                            <div className="row">
+                                                <div className="col-12 col-md-6">
+                                                    <div className="input-group">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">Məhsul  adı :</span>
+                                                        </div>
+                                                        <input type="text" className="form-control" name='NAME' onChange={(e) => handleInput(e)} />
                                                     </div>
-                                                    <input type="text" className="form-control" name='NAME' onChange={(e) => handleInput(e)} />
-                                                </div>
-                                                <div className="input-group mt-2">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">Məhsul  kodu :</span>
+                                                    <div className="input-group mt-2">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">Məhsul  kodu :</span>
+                                                        </div>
+                                                        <input type="text" className="form-control" disabled value={code} name='CODE' />
                                                     </div>
-                                                    <input type="text" className="form-control" disabled value={code} name='CODE' />
-                                                </div>
-                                                <div className="input-group mt-2">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">Məhsul  barkodu :</span>
+                                                    <div className="input-group mt-2">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">Məhsul  barkodu :</span>
+                                                        </div>
+                                                        <input type="text" className="form-control" name='BARCODE' onChange={(e) => handleInput(e)} />
                                                     </div>
-                                                    <input type="text" className="form-control" name='BARCODE' onChange={(e) => handleInput(e)} />
-                                                </div>
-                                                <div className="input-group mt-2">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">Məhsul  Statusu :</span>
+                                                    <div className="input-group mt-2">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">Məhsul  Statusu :</span>
+                                                        </div>
+                                                        <label className="switch">
+                                                            <input type="checkbox" className='switcher' name='STATUS' onChange={() => setStatus(!status)} />
+                                                            <span className="slider"></span>
+                                                        </label>
+                                                        <span className='switch-content ml-3'>{status ? "Aktiv" : "Passiv"}</span>
+
                                                     </div>
-                                                    <label className="switch">
-                                                        <input type="checkbox" className='switcher' name='STATUS' onChange={() => setStatus(!status)} />
-                                                        <span className="slider"></span>
-                                                    </label>
-                                                    <span className='switch-content ml-3'>{status ? "Aktiv" : "Passiv"}</span>
+                                                    <div className="input-group mt-2">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">ƏDV Tipi:</span>
+                                                        </div>
+                                                        <label className="switch">
+                                                            <input type="checkbox" className='switcher' name='STATUS' onChange={() => setEdvType(!edvType)} />
+                                                            <span className="slider"></span>
+                                                        </label>
+                                                        <span className='switch-content ml-3'>{edvType ? "ƏDV Daxil" : "ƏDV Xaric"}</span>
+
+                                                    </div>
+                                                    <div className="input-group mt-2">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">ƏDV Dərəcəsi :</span>
+                                                        </div>
+                                                        <input type="number" className="form-control" name='EDV_PER' onChange={(e) => handleInput(e)} />
+                                                    </div>
 
                                                 </div>
-                                                <div className="input-group mt-2">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">ƏDV Tipi:</span>
+                                                <div className="col-12 col-md-6">
+                                                    <div className="input-group">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">Məhsul  kateqoriyası :</span>
+                                                        </div>
+                                                        <select name="Category" className="form-control" onChange={(e) => setCategorySelect(e.target.value)}>
+                                                            {categories && categories.map((index, key) => (
+                                                                <option key={key} value={index.ID}>{index.NAME_}</option>
+                                                            ))}
+                                                        </select>
                                                     </div>
-                                                    <label className="switch">
-                                                        <input type="checkbox" className='switcher' name='STATUS' onChange={() => setEdvType(!edvType)} />
-                                                        <span className="slider"></span>
-                                                    </label>
-                                                    <span className='switch-content ml-3'>{edvType ? "ƏDV Daxil" : "ƏDV Xaric"}</span>
+                                                    <div className="input-group mt-2">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">Məhsul  markası :</span>
+                                                        </div>
+                                                        <select name="Category" className="form-control" onChange={(e) => setMarkSelect(e.target.value)}>
+                                                            {marks && marks.map((index, key) => (
+                                                                <option key={key} value={index.ID}>{index.NAME_}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    <div className="input-group mt-2">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">Məhsul alt markası :</span>
+                                                        </div>
+                                                        <select name="Category" className="form-control" onChange={(e) => setSubmarkSelect(e.target.value)}>
+                                                            {submarks && submarks.map((index, key) => (
+                                                                <option key={key} value={index.ID}>{index.NAME_}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    <div className="input-group mt-2">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">Məhsul vahidi :</span>
+                                                        </div>
+                                                        <select name="Category" className="form-control" onChange={(e) => setUnitSelect(e.target.value)}>
+                                                            {units && units.map((index, key) => (
+                                                                <option key={key} value={index.ID}>{index.CODE}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    <div className="input-group mt-2">
+                                                        <div className="input-group-prepend">
+                                                            <span className="input-group-text">Veb Status:</span>
+                                                        </div>
+                                                        <label className="switch">
+                                                            <input type="checkbox" className='switcher' name='WEB_STATUS' onChange={() => setWebStatus(!webStatus)} />
+                                                            <span className="slider"></span>
+                                                        </label>
+                                                        <span className='switch-content ml-3'>{webStatus ? "Aktiv" : "Passiv"}</span>
 
-                                                </div>
-                                                <div className="input-group mt-2">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">ƏDV Dərəcəsi :</span>
                                                     </div>
-                                                    <input type="text" className="form-control" name='EDV_PER' onChange={(e) => handleInput(e)} />
-                                                </div>
-
-                                            </div>
-                                            <div className="col-12 col-md-6">
-                                                <div className="input-group">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">Məhsul  kateqoriyası :</span>
-                                                    </div>
-                                                    <select name="Category" className="form-control" onChange={(e) => setCategorySelect(e.target.value)}>
-                                                        {categories && categories.map((index, key) => (
-                                                            <option key={key} value={index.ID}>{index.NAME_}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                <div className="input-group mt-2">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">Məhsul  markası :</span>
-                                                    </div>
-                                                    <select name="Category" className="form-control" onChange={(e) => setMarkSelect(e.target.value)}>
-                                                        {marks && marks.map((index, key) => (
-                                                            <option key={key} value={index.ID}>{index.NAME_}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                <div className="input-group mt-2">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">Məhsul alt markası :</span>
-                                                    </div>
-                                                    <select name="Category" className="form-control" onChange={(e) => setSubmarkSelect(e.target.value)}>
-                                                        {submarks && submarks.map((index, key) => (
-                                                            <option key={key} value={index.ID}>{index.NAME_}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                <div className="input-group mt-2">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">Məhsul vahidi :</span>
-                                                    </div>
-                                                    <select name="Category" className="form-control" onChange={(e) => setUnitSelect(e.target.value)}>
-                                                        {units && units.map((index, key) => (
-                                                            <option key={key} value={index.ID}>{index.CODE}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                <div className="input-group mt-2">
-                                                    <div className="input-group-prepend">
-                                                        <span className="input-group-text">Veb Status:</span>
-                                                    </div>
-                                                    <label className="switch">
-                                                        <input type="checkbox" className='switcher' name='WEB_STATUS' onChange={() => setWebStatus(!webStatus)} />
-                                                        <span className="slider"></span>
-                                                    </label>
-                                                    <span className='switch-content ml-3'>{webStatus ? "Aktiv" : "Passiv"}</span>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -654,7 +702,79 @@ function ItemModal() {
                                         5
                                     </div>
                                     <div className={newTab.activeTab === 6 ? "tab-pane fade show active" : "tab-pane fade"}>
-                                        
+                                        {
+                                            priceList.map((index, key) => {
+                                                return (
+                                                    <div className="col-12 mt-3" key={key}>
+                                                        <div className="row justify-content-between flex-nowrap item-row">
+                                                            {
+                                                                priceList.length !== 1 &&
+                                                                <div className='input-box d-flex align-items-end'>
+                                                                    <button
+                                                                        type='button'
+                                                                        className="btn btn-danger"
+                                                                        onClick={() => handlePriceRemove(key)}>
+                                                                        <i className="fa fa-fw" aria-hidden="true" title="Copy to use trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            }
+                                                            <div className="input-box">
+                                                                <label>Rəng adi</label>
+                                                                <input
+                                                                    className='form-control w-100px'
+                                                                    value={index.COLOR_NAME}
+                                                                    disabled
+                                                                    readOnly
+                                                                />
+                                                            </div>
+                                                            <div className="input-box">
+                                                                <label>Ölçü adi</label>
+                                                                <input
+                                                                    className='form-control w-100px'
+                                                                    value={index.SIZE_NAME}
+                                                                    disabled
+                                                                    readOnly
+                                                                />
+                                                            </div>
+                                                            <div className="input-box">
+                                                                <label>ƏDV Tipi</label>
+                                                                <select name="EDV_TYPE" className='form-control' id="" onChange={(e) => handlePriceChange(e, key)}>
+                                                                    <option value="1">ƏDV Daxil</option>
+                                                                    <option value="2">ƏDV Xaric</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="input-box">
+                                                                <label>A/S</label>
+                                                                <select name="PTYPE_" className='form-control' id="" onChange={(e) => handlePriceChange(e, key)}>
+                                                                    <option value="1">Alış</option>
+                                                                    <option value="2">Satış</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="input-box">
+                                                                <label>ƏDV Faizi</label>
+                                                                <input type="number" className='form-control w-100px' name="EDV_PER" onChange={(e) => handlePriceChange(e, key)} />
+                                                            </div>
+                                                            <div className="input-box">
+                                                                <label>Qiymet</label>
+                                                                <input type="number" className='form-control w-100px' name="PRICE" onChange={(e) => handlePriceChange(e, key)} />
+                                                            </div>
+                                                            <div className="input-box">
+                                                                <label>Qeyd</label>
+                                                                <input type="text" className="form-control" name="NOTE_" onChange={(e) => handlePriceChange(e, key)} />
+                                                            </div>
+                                                            <div className="input-box">
+                                                                <label>Baş. tarixi</label>
+                                                                <input type="date" className="form-control" name="BEG_DATE" onChange={(e) => handlePriceChange(e, key)} />
+                                                            </div>
+                                                            <div className="input-box">
+                                                                <label>Bit. tarixi</label>
+                                                                <input type="date" className="form-control" name="END_DATE" onChange={(e) => handlePriceChange(e, key)} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
                                     </div>
 
 
