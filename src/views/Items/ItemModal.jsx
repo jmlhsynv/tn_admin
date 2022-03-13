@@ -134,11 +134,14 @@ function ItemModal() {
     // priceList
     const [priceList, setPriceList] = useState([])
     const handlePriceChange = (e, index) => {
-        const { name, value } = e.target
+        let name = e.target.name 
+        let value = e.target.value 
+        if (name === "EDV_PER" || name === "PRICE") {
+            value = parseFloat(value)
+        }
         const list = [...priceList]
-        list[index][name] = name === "EDV_PER" || "PRICE" ? parseFloat(value) : value
+        list[index][name] = value
         setPriceList(list)
-        console.log(priceList);
     }
     const handlePriceRemove = index => {
         const list = [...priceList];
@@ -156,10 +159,8 @@ function ItemModal() {
             EDV_PER: 0,
             SIZE_ID: 0,
             COLOR_ID: 0,
-            SIZE_CODE: "",
-            SIZE_NAME: "",
-            COLOR_CODE: "",
-            COLOR_NAME: "",
+            SIZE_CODE: sizeList[0].CODE,
+            COLOR_CODE: colorList[0].CODE,
             NOTE_: "",
             BEG_DATE: "",
             END_DATE: "",
@@ -168,69 +169,43 @@ function ItemModal() {
         ])
     }
 
-    // useEffect(() => {
-    //     let prices = colorList.map(c => (
-    //         sizeList.map(s => (
-    //             {
-    //                 ID: 0,
-    //                 ITEM_ID: 0,
-    //                 PTYPE_: 1,
-    //                 PRICE: 0,
-    //                 EDV_TYPE: 1,
-    //                 EDV_PER: 0,
-    //                 SIZE_ID: 0,
-    //                 COLOR_ID: 0,
-    //                 SIZE_CODE: s.CODE,
-    //                 SIZE_NAME: s.NAME_,
-    //                 COLOR_CODE: c.CODE,
-    //                 COLOR_NAME: c.NAME_,
-    //                 NOTE_: "",
-    //                 BEG_DATE: "",
-    //                 END_DATE: "",
-    //                 USER_ID: 1
-    //             }
-    //         ))
-    //     ))
-    //     let merged = [].concat.apply([], prices);
-
-    //     setPriceList(merged);
-
-    // }, [sizeList, colorList])
-
     // new data
     const [product, setProduct] = useState({})
     const handleInput = (e) => {
         let name = e.target.name
         let val = e.target.value
-        setProduct({ ...product, [name]: name === "EDV_PER" ? parseFloat(val) : val })
+
+        if (name === "EDV_PER") {
+            val = parseFloat(val)
+        }
+        setProduct({ ...product, [name]: val })
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(priceList);
-        // dispatch(postItem(
-        //     {
-        //         ...product,
-        //         ID: 0,
-        //         STATUS_: status,
-        //         CODE: code,
-        //         CATEGORY_ID: categorySelect,
-        //         MARK_ID: markSelect,
-        //         SUBMARK_ID: submarkSelect,
-        //         UNIT_ID: unitSelect,
-        //         EDV_TYPE: edvType ? 1 : 2,
-        //         WEB_STATUS: webStatus,
-        //         PICTURE_URL: "C:\\Pictures\\Discount.jpg",
-        //         PICTURE_URL2: "C:\\Pictures\\Discount.jpg",
-        //         PICTURE_URL3: "C:\\Pictures\\Discount.jpg",
-        //         PICTURE_URL4: "C:\\Pictures\\Discount.jpg",
-        //         PICTURE_URL5: "C:\\Pictures\\Discount.jpg",
-        //         USER_ID: 0,
-        //         sizes: sizeList,
-        //         colors: colorList,
-        //         prices: priceList
-        //     }
-        // ))
+        dispatch(postItem(
+            {
+                ...product,
+                ID: 0,
+                STATUS_: status,
+                CODE: code,
+                CATEGORY_ID: categorySelect,
+                MARK_ID: markSelect,
+                SUBMARK_ID: submarkSelect,
+                UNIT_ID: unitSelect,
+                EDV_TYPE: edvType ? 1 : 2,
+                WEB_STATUS: webStatus,
+                PICTURE_URL: "C:\\Pictures\\Discount.jpg",
+                PICTURE_URL2: "C:\\Pictures\\Discount.jpg",
+                PICTURE_URL3: "C:\\Pictures\\Discount.jpg",
+                PICTURE_URL4: "C:\\Pictures\\Discount.jpg",
+                PICTURE_URL5: "C:\\Pictures\\Discount.jpg",
+                USER_ID: 0,
+                sizes: sizeList,
+                colors: colorList,
+                prices: priceList
+            }
+        ))
         e.target.reset()
         dispatch(setNewModal())
 
@@ -368,17 +343,30 @@ function ItemModal() {
                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
-                                                        <th>Rəng Kodu</th>
                                                         <th>Rəng adı</th>
+                                                        <th>Ölçü adı</th>
+                                                        <th>Qiymət</th>
+                                                        <th>ƏDV Tipi</th>
+                                                        <th>Alış/Satış</th>
+                                                        <th>Qeyd</th>
+                                                        <th>Baş. Tarixi</th>
+                                                        <th>Bit. Tarixi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        viewDetail && viewDetail.colors.map((index, key) => (
+                                                        viewDetail && viewDetail.prices.map((index, key) => (
                                                             <tr key={key}>
                                                                 <td>{key + 1}</td>
-                                                                <td>{index.CODE}</td>
-                                                                <td>{index.NAME_}</td>
+                                                                <td>{index.COLOR_CODE}</td>
+                                                                <td>{index.SIZE_CODE}</td>
+                                                                <td>{index.PRICE}</td>
+                                                                <td>{index.EDV_TYPE === 1 ? "ƏDV Daxil" :  "ƏDV Xaric"}</td>
+                                                                <td>{index.PTYPE_ === 1 ? "Alış" :  "Satış"}</td>
+                                                                <td>{index.NOTE_}</td>
+                                                                <td>{index.BEG_DATE}</td>
+                                                                <td>{index.END_DATE}</td>
+
                                                             </tr>
                                                         ))
                                                     }
@@ -499,7 +487,7 @@ function ItemModal() {
                                                         <div className="input-group-prepend">
                                                             <span className="input-group-text">ƏDV Dərəcəsi :</span>
                                                         </div>
-                                                        <input type="number" className="form-control" name='EDV_PER' onChange={(e) => handleInput(e)} />
+                                                        <input type="text" className="form-control" name='EDV_PER' onChange={(e) => handleInput(e)} />
                                                     </div>
 
                                                 </div>
@@ -726,7 +714,9 @@ function ItemModal() {
                                     <div className={newTab.activeTab === 6 ? "tab-pane fade show active" : "tab-pane fade"}>
                                         <div className="col-12 mb-3">
                                             <div className="row justify-content-end">
-                                                <div className="col-2">
+                                                <div className="col-3 d-flex">
+                                                <h6 className='mr-5'>Qiymet elave et</h6>
+
                                                     <button className="btn btn-primary btn-block" type='button' onClick={handleAddPrice}>
                                                         <i className="fa fa-fw" aria-hidden="true" title="Copy to use plus"></i>
                                                     </button>
@@ -751,20 +741,20 @@ function ItemModal() {
                                                             }
                                                             <div className="input-box">
                                                                 <label>Rəng adi</label>
-                                                                <select name="" id="" className='form-control'>
+                                                                <select name="COLOR_CODE" id="" className='form-control' onChange={(e)=>handlePriceChange(e, key)}>
                                                                     {
                                                                         colorList.map((index, key) => (
-                                                                            <option value={index.NAME_}>{index.NAME_}</option>
+                                                                            <option value={index.NAME_} key={key}>{index.CODE}</option>
                                                                         ))
                                                                     }
                                                                 </select>
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>Ölçü adi</label>
-                                                                <select name="" id="" className='form-control'>
+                                                                <select name="SIZE_CODE" id="" className='form-control' onChange={(e)=>handlePriceChange(e, key)}>
                                                                     {
                                                                         sizeList.map((index, key) => (
-                                                                            <option value={index.NAME_}>{index.NAME_}</option>
+                                                                            <option value={index.CODE} key={key}>{index.NAME_}</option>
                                                                         ))
                                                                     }
                                                                 </select>
@@ -785,11 +775,11 @@ function ItemModal() {
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>ƏDV Faizi</label>
-                                                                <input type="number" className='form-control w-100px' name="EDV_PER" onChange={(e) => handlePriceChange(e, key)} />
+                                                                <input type="text" className='form-control w-100px' name="EDV_PER" onChange={(e) => handlePriceChange(e, key)} />
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>Qiymet</label>
-                                                                <input type="number" className='form-control w-100px' name="PRICE" onChange={(e) => handlePriceChange(e, key)} />
+                                                                <input type="text" className='form-control w-100px' name="PRICE" onChange={(e) => handlePriceChange(e, key)} />
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>Qeyd</label>
