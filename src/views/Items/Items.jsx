@@ -3,10 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchItems, deleteItem as deleteProduct } from '../../stores/Items/items'
 import { getDetailedItem } from '../../stores/Items/viewItem';
 import { getStatus } from '../../stores/auth';
+
 import swal from 'sweetalert';
 
 import { setViewModal } from '../../stores/Items/viewItem'
 import { setNewModal } from '../../stores/Items/newItem';
+import { getEditItem, setEditModal } from '../../stores/Items/editItem'
 
 import { useHistory } from "react-router-dom"
 import { logout } from '../../stores/auth';
@@ -68,6 +70,12 @@ function Items() {
     dispatch(getDetailedItem(id))
     dispatch(setViewModal())
   }
+
+  const handleEditModal = (id) => {
+    dispatch(getEditItem(id))
+    dispatch(setEditModal())
+  }
+
   return (
     <div>
       <div className="main-card mb-3 card">
@@ -110,7 +118,7 @@ function Items() {
                         <button type="button" className="btn btn-primary" onClick={() => viewItem(index.ID)}>
                           <i className="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i>
                         </button>
-                        <button type="button" className="btn btn-success">
+                        <button type="button" className="btn btn-success" onClick={() => handleEditModal(index.ID)}>
                           <i className="fa fa-fw" aria-hidden="true" title="Copy to use edit"></i>
                         </button>
                         <button type="button" className="btn btn-danger" onClick={() => deleteItem(index.CODE, index.ID)}>
