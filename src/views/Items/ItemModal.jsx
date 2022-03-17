@@ -223,11 +223,21 @@ function ItemModal() {
     const [editData, setEditData] = useState({})
     const [editEdvType, setEditEdvType] = useState(false)
     const [editColorList, setEditColorList] = useState([])
+    const [editSizeList, setEditSizeList] = useState([])
+    const [editPriceList, setEditPriceList] = useState([])
 
     useEffect(() => {
         setEditData(editDetail)
-        editDetail ? (editDetail.EDV_TYPE === 1 ? setEditEdvType(true) : setEditEdvType(false)) : setEditEdvType(false)
-        editDetail ? setEditColorList(editDetail.colors) : setEditColorList([])
+        
+        editDetail ? 
+        (editDetail.EDV_TYPE === 1 ? setEditEdvType(true) : setEditEdvType(false)) : 
+        setEditEdvType(false)
+
+        editDetail ? setEditColorList(editDetail.colors): setEditColorList([])
+        editDetail ? setEditSizeList(editDetail.sizes): setEditSizeList([])
+        editDetail ? setEditPriceList(editDetail.prices): setEditPriceList([])
+
+        
     }, [editDetail])
 
     const handleEditInput = (e) => {
@@ -238,11 +248,11 @@ function ItemModal() {
     // edit color list
     const handleEditColorChange = (e, index) => {
         const { name, value } = e.target;
-        const list = [...editColorList];
-        console.log(value);
-        // list[index][name] = value;
-        // setEditColorList(list);
+        let list = JSON.parse(JSON.stringify(editColorList));
+        list[index][name] = value;
+        setEditColorList(list);
     };
+    
     const handleEditColorRemove = index => {
         const list = [...editColorList];
         list.splice(index, 1);
@@ -252,7 +262,62 @@ function ItemModal() {
         setEditColorList([...editColorList, { ID: 0, ITEM_ID: 0, USER_ID: 1, NAME_: "", CODE: "" }]);
     };
 
-    console.log(editColorList);
+    // edit Size List
+    const handleEditSizeChange = (e, index) => {
+        const { name, value } = e.target;
+        let list = JSON.parse(JSON.stringify(editSizeList));
+        list[index][name] = value;
+        setEditSizeList(list);
+    };
+    const handleEditSizeRemove = index => {
+        const list = [...editSizeList];
+        list.splice(index, 1);
+        setEditSizeList(list);
+    };
+    const handleEditAddSize = () => {
+        setEditSizeList([...editSizeList, { ID: 0, ITEM_ID: 0, USER_ID: 1, NAME_: "", CODE: "" }]);
+    };
+
+    // edit Price List
+    const handleEditPriceChange = (e, index) => {
+        let name = e.target.name
+        let value = e.target.value
+        if (name === "EDV_PER" || name === "PRICE") {
+            value = parseFloat(value)
+        }
+        // const list = [...priceList]
+        let list = JSON.parse(JSON.stringify(editPriceList));
+        list[index][name] = value
+        setEditPriceList(list)
+    }
+    const handleEditPriceRemove = index => {
+        const list = [...priceList];
+        list.splice(index, 1);
+        setEditPriceList(list);
+    };
+    const handleEditAddPrice = () => {
+        setEditPriceList([...priceList,
+        {
+            ID: 0,
+            ITEM_ID: 0,
+            PTYPE_: 1,
+            PRICE: 0,
+            EDV_TYPE: 1,
+            EDV_PER: 0,
+            SIZE_ID: 0,
+            COLOR_ID: 0,
+            SIZE_CODE: sizeList[0].CODE,
+            COLOR_CODE: colorList[0].CODE,
+            NOTE_: "",
+            BEG_DATE: "",
+            END_DATE: "",
+            USER_ID: 1
+        }
+        ])
+    }
+
+
+    console.log(editPriceList);
     return (
         <>
             {/* View Item */}
@@ -791,7 +856,7 @@ function ItemModal() {
                                                                 <select name="COLOR_CODE" id="" className='form-control' onChange={(e) => handlePriceChange(e, key)}>
                                                                     {
                                                                         colorList.map((index, key) => (
-                                                                            <option value={index.NAME_} key={key}>{index.CODE}</option>
+                                                                            <option value={index.CODE} key={key}>{index.NAME_}</option>
                                                                         ))
                                                                     }
                                                                 </select>
@@ -1110,17 +1175,17 @@ function ItemModal() {
                                         <div className="col-12 mb-3">
                                             <div className="row justify-content-end">
                                                 <div className="col-2">
-                                                    <button className="btn btn-primary btn-block" type='button' onClick={handleAddSize}>
+                                                    <button className="btn btn-primary btn-block" type='button' onClick={handleEditAddSize}>
                                                         <i className="fa fa-fw" aria-hidden="true" title="Copy to use plus"></i>
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
-                                        {sizeList.map((index, key) => {
+                                        {editSizeList.map((index, key) => {
                                             return (
                                                 <div className="col-12 mt-2" key={key}>
                                                     <div className="row">
-                                                        <div className={sizeList.length > 1 ? "col-5" : "col-6"}>
+                                                        <div className={editSizeList.length > 1 ? "col-5" : "col-6"}>
                                                             <div className="input-group">
                                                                 <div className="input-group-prepend">
                                                                     <span className="input-group-text">Ölçü Adı :</span>
@@ -1129,12 +1194,12 @@ function ItemModal() {
                                                                     name="NAME_"
                                                                     className='form-control'
                                                                     value={index.NAME_}
-                                                                    onChange={e => handleSizeChange(e, key)}
+                                                                    onChange={e => handleEditSizeChange(e, key)}
                                                                 />
                                                             </div>
 
                                                         </div>
-                                                        <div className={sizeList.length > 1 ? "col-5" : "col-6"}>
+                                                        <div className={editSizeList.length > 1 ? "col-5" : "col-6"}>
                                                             <div className="input-group">
                                                                 <div className="input-group-prepend">
                                                                     <span className="input-group-text">Ölçü Kodu :</span>
@@ -1143,7 +1208,7 @@ function ItemModal() {
                                                                     className="form-control"
                                                                     name="CODE"
                                                                     value={index.CODE}
-                                                                    onChange={e => handleSizeChange(e, key)}
+                                                                    onChange={e => handleEditSizeChange(e, key)}
                                                                 />
                                                             </div>
 
@@ -1151,11 +1216,11 @@ function ItemModal() {
                                                         <div className="col-2">
                                                             <div className="w-100">
                                                                 {
-                                                                    sizeList.length !== 1 &&
+                                                                    editSizeList.length !== 1 &&
                                                                     <button
                                                                         type='button'
                                                                         className="btn btn-danger btn-block"
-                                                                        onClick={() => handleSizeRemove(key)}>
+                                                                        onClick={() => handleEditSizeRemove(key)}>
                                                                         <i className="fa fa-fw" aria-hidden="true" title="Copy to use trash"></i>
                                                                     </button>
                                                                 }
@@ -1176,31 +1241,56 @@ function ItemModal() {
                                             <div className="input-group-prepend">
                                                 <span className="input-group-text">Qeyd 1 :</span>
                                             </div>
-                                            <textarea className="form-control" name='NOTE' onChange={(e) => handleInput(e)} ></textarea>
+                                            <textarea 
+                                                className="form-control" 
+                                                name='NOTE' 
+                                                value={editData ? editData.NOTE || '' : " "}
+                                                onChange={(e) => handleEditInput(e)} >
+                                            </textarea>
                                         </div>
                                         <div className="input-group mt-2">
                                             <div className="input-group-prepend">
                                                 <span className="input-group-text">Qeyd 2 :</span>
                                             </div>
-                                            <textarea className="form-control" name='NOTE2' onChange={(e) => handleInput(e)} ></textarea>
+                                            <textarea 
+                                                className="form-control" 
+                                                name='NOTE2' 
+                                                value={editData ? editData.NOTE2 || '' : " "}
+                                                onChange={(e) => handleEditInput(e)} >
+                                            </textarea>
                                         </div>
                                         <div className="input-group mt-2">
                                             <div className="input-group-prepend">
                                                 <span className="input-group-text">Qeyd 3 :</span>
                                             </div>
-                                            <textarea className="form-control" name='NOTE3' onChange={(e) => handleInput(e)} ></textarea>
+                                            <textarea 
+                                                className="form-control" 
+                                                name='NOTE3' 
+                                                value={editData ? editData.NOTE3 || '' : " "}
+                                                onChange={(e) => handleEditInput(e)} >
+                                            </textarea>
                                         </div>
                                         <div className="input-group mt-2">
                                             <div className="input-group-prepend">
                                                 <span className="input-group-text">Qeyd 4 :</span>
                                             </div>
-                                            <textarea className="form-control" name='NOTE4' onChange={(e) => handleInput(e)} ></textarea>
+                                            <textarea 
+                                                className="form-control" 
+                                                name='NOTE4' 
+                                                value={editData ? editData.NOTE4 || '' : " "}
+                                                onChange={(e) => handleEditInput(e)} >
+                                            </textarea>
                                         </div>
                                         <div className="input-group mt-2">
                                             <div className="input-group-prepend">
                                                 <span className="input-group-text">Qeyd 5 :</span>
                                             </div>
-                                            <textarea className="form-control" name='NOTE5' onChange={(e) => handleInput(e)} ></textarea>
+                                            <textarea 
+                                                className="form-control" 
+                                                name='NOTE5' 
+                                                value={editData ? editData.NOTE5 || '' : " "}
+                                                onChange={(e) => handleEditInput(e)} >
+                                            </textarea>
                                         </div>
                                     </div>
                                     <div className={editTab.activeTab === 5 ? "tab-pane fade show active" : "tab-pane fade"}>
@@ -1212,43 +1302,47 @@ function ItemModal() {
                                                 <div className="col-3 d-flex">
                                                     <h6 className='mr-5'>Qiymet elave et</h6>
 
-                                                    <button className="btn btn-primary btn-block" type='button' onClick={handleAddPrice}>
+                                                    <button className="btn btn-primary btn-block" type='button' onClick={handleEditAddPrice}>
                                                         <i className="fa fa-fw" aria-hidden="true" title="Copy to use plus"></i>
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                         {
-                                            priceList.map((index, key) => {
+                                            editPriceList.map((index, key) => {
                                                 return (
                                                     <div className="col-12 mt-3" key={key}>
                                                         <div className="row justify-content-between flex-nowrap item-row">
                                                             {
-                                                                priceList.length !== 1 &&
+                                                                editPriceList.length !== 1 &&
                                                                 <div className='input-box d-flex align-items-end'>
                                                                     <button
                                                                         type='button'
                                                                         className="btn btn-danger"
-                                                                        onClick={() => handlePriceRemove(key)}>
+                                                                        onClick={() => handleEditPriceRemove(key)}>
                                                                         <i className="fa fa-fw" aria-hidden="true" title="Copy to use trash"></i>
                                                                     </button>
                                                                 </div>
                                                             }
                                                             <div className="input-box">
                                                                 <label>Rəng adi</label>
-                                                                <select name="COLOR_CODE" id="" className='form-control' onChange={(e) => handlePriceChange(e, key)}>
+                                                                <select name="COLOR_CODE" id=""
+                                                                value={index.COLOR_CODE}
+                                                                className='form-control' onChange={(e) => handleEditPriceChange(e, key)}>
                                                                     {
-                                                                        colorList.map((index, key) => (
-                                                                            <option value={index.NAME_} key={key}>{index.CODE}</option>
+                                                                        editColorList.map((index, key) => (
+                                                                            <option value={index.CODE} key={key}>{index.NAME_}</option>
                                                                         ))
                                                                     }
                                                                 </select>
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>Ölçü adi</label>
-                                                                <select name="SIZE_CODE" id="" className='form-control' onChange={(e) => handlePriceChange(e, key)}>
+                                                                <select name="SIZE_CODE" 
+                                                                value={index.SIZE_CODE}
+                                                                 className='form-control' onChange={(e) => handleEditPriceChange(e, key)}>
                                                                     {
-                                                                        sizeList.map((index, key) => (
+                                                                        editSizeList.map((index, key) => (
                                                                             <option value={index.CODE} key={key}>{index.NAME_}</option>
                                                                         ))
                                                                     }
@@ -1256,37 +1350,51 @@ function ItemModal() {
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>ƏDV Tipi</label>
-                                                                <select name="EDV_TYPE" className='form-control' id="" onChange={(e) => handlePriceChange(e, key)}>
+                                                                <select name="EDV_TYPE" className='form-control' 
+                                                                value={index.EDV_TYPE}
+                                                                onChange={(e) => handleEditPriceChange(e, key)}>
                                                                     <option value="1">ƏDV Daxil</option>
                                                                     <option value="2">ƏDV Xaric</option>
                                                                 </select>
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>A/S</label>
-                                                                <select name="PTYPE_" className='form-control' id="" onChange={(e) => handlePriceChange(e, key)}>
+                                                                <select name="PTYPE_" className='form-control' 
+                                                                    value={index.PTYPE_}
+                                                                 onChange={(e) => handleEditPriceChange(e, key)}>
                                                                     <option value="1">Alış</option>
                                                                     <option value="2">Satış</option>
                                                                 </select>
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>ƏDV Faizi</label>
-                                                                <input type="text" className='form-control w-100px' name="EDV_PER" onChange={(e) => handlePriceChange(e, key)} />
+                                                                <input type="text" className='form-control w-100px' 
+                                                                value={index.EDV_PER}
+                                                                name="EDV_PER" onChange={(e) => handleEditPriceChange(e, key)} />
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>Qiymet</label>
-                                                                <input type="text" className='form-control w-100px' name="PRICE" onChange={(e) => handlePriceChange(e, key)} />
+                                                                <input type="text" className='form-control w-100px'
+                                                                    value={index.PRICE} 
+                                                                    name="PRICE" onChange={(e) => handleEditPriceChange(e, key)} />
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>Qeyd</label>
-                                                                <input type="text" className="form-control" name="NOTE_" onChange={(e) => handlePriceChange(e, key)} />
+                                                                <input type="text" className="form-control" 
+                                                                value={index.NOTE_} 
+                                                                name="NOTE_" onChange={(e) => handleEditPriceChange(e, key)} />
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>Baş. tarixi</label>
-                                                                <input type="date" className="form-control" name="BEG_DATE" onChange={(e) => handlePriceChange(e, key)} />
+                                                                <input type="date" className="form-control" 
+                                                                    value={index.BEG_DATE} 
+                                                                    name="BEG_DATE" onChange={(e) => handleEditPriceChange(e, key)} />
                                                             </div>
                                                             <div className="input-box">
                                                                 <label>Bit. tarixi</label>
-                                                                <input type="date" className="form-control" name="END_DATE" onChange={(e) => handlePriceChange(e, key)} />
+                                                                <input type="date" className="form-control" 
+                                                                    value={index.END_DATE}
+                                                                    name="END_DATE" onChange={(e) => handleEditPriceChange(e, key)} />
                                                             </div>
                                                         </div>
                                                     </div>

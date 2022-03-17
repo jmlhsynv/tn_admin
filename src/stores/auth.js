@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios"
 const { REACT_APP_API_URL } = process.env
+
 export const getStatus = createAsyncThunk(
 	"auth/getStatus",
 	async () => {
