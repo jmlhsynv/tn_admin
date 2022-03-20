@@ -32,6 +32,23 @@ export const postItem = createAsyncThunk(
         };
     }
 );
+
+export const editItem = createAsyncThunk(
+    "items/editItem",
+    async (edittedData) => {
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem('token')
+        }
+        const res = await axios.put(`${url}/${edittedData.ID}`, edittedData, { headers });
+        console.log(res.data);
+        return {
+            data: edittedData,
+            success: res.data[0]
+        }
+    }
+);
+
 export const deleteItem = createAsyncThunk(
     "items/deleteItem",
     async (id) => {
@@ -88,6 +105,23 @@ const itemSlice = createSlice({
             return {...state, pending: false, error: 401}
         },
         
+        // EDIT
+        [editItem.pending]: (state) => {
+            return { ...state, pending: true }
+        },
+        [editItem.fulfilled]: (state, { payload }) => {
+            return {
+                ...state, pending: false, items: [
+                    ...state.items.map(e => e.ID === payload.data.ID ?
+                         { ...payload.data} 
+                        : e)
+                ]
+            };
+        },
+        [editItem.rejected]: (state, {payload}) => {
+            return {...state, pending: false, error: 401}
+        },
+
         // DELETE
         [deleteItem.pending]: (state) => {
             return { ...state, pending: true }
@@ -111,23 +145,3 @@ export const getAllItems = (state) => state.units.units;
 export const { removeErrors } = itemSlice.actions
 
 export default itemSlice.reducer;
-
-
-// "prices": [
-//     {
-//         "ID": 0,
-//         "ITEM_ID": 0,
-//         "PTYPE_": 1,
-//         "PRICE": 10,
-//         "EDV_TYPE": 1,
-//         "EDV_PER": 18.0,
-//         "SIZE_ID": 0,
-//         "COLOR_ID": 0,
-    // "COLOR_CODE":"" ,   
-            // "SIZE_CODE":"" ,
-//         "NOTE_": "121212",
-//         "BEG_DATE": "2022-01-01",
-//         "END_DATE": "2022-12-31",
-//         "USER_ID": 1
-//     }
-// ]

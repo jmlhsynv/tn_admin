@@ -6,7 +6,7 @@ import { fetchMarks } from '../../stores/Marks/marks';
 import { fetchSubmarks } from '../../stores/Submarks/submarks';
 import { fetchUnits } from '../../stores/Units/units';
 
-import { postItem } from '../../stores/Items/items';
+import { postItem, editItem } from '../../stores/Items/items';
 
 import { setViewModal } from '../../stores/Items/viewItem'
 import { setNewModal } from '../../stores/Items/newItem';
@@ -144,6 +144,7 @@ function ItemModal() {
         list[index][name] = value
         setPriceList(list)
     }
+    
     const handlePriceRemove = index => {
         const list = [...priceList];
         list.splice(index, 1);
@@ -316,8 +317,13 @@ function ItemModal() {
         ])
     }
 
-
-    console.log(editPriceList);
+    const handleEditSubmit = (e) => {
+        e.preventDefault()
+        dispatch(editItem(editData))
+        dispatch(setEditModal())
+        setEditData([])
+        e.target.reset()
+    }
     return (
         <>
             {/* View Item */}
@@ -956,7 +962,7 @@ function ItemModal() {
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form onSubmit={(e) => handleSubmit(e)}>
+                        <form onSubmit={(e) => handleEditSubmit(e)}>
 
                             <div className="modal-body">
                                 <ul className="nav nav-tabs" id="myTab" role="tablist">

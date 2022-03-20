@@ -23,12 +23,11 @@ function Items() {
   useEffect(() => {
     dispatch(fetchItems())
     dispatch(getStatus())
-  }, [dispatch])
+  }, [dispatch, items])
 
   const history = useHistory()
   const { error } = useSelector(state => state.units)
   useEffect(() => {
-
     if (error === 401) {
       dispatch(logout())
       dispatch(removeErrors())
