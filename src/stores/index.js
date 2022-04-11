@@ -28,6 +28,8 @@ import viewItemReducer from './Items/viewItem'
 import newItemReducer from './Items/newItem'
 import editItemReducer from './Items/editItem'
 
+import itemFichesReducer from './ItemFiches/itemFiches'
+
 export default configureStore({
 	reducer: {
 		auth: authReducer,
@@ -61,6 +63,9 @@ export default configureStore({
 		items: itemReducer,
 		viewItem: viewItemReducer,
 		newItem: newItemReducer,
-		editItem: editItemReducer
+		editItem: editItemReducer,
+
+		// Item Fiches
+		itemFiches: itemFichesReducer,
 	}
 })

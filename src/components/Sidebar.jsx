@@ -115,7 +115,7 @@ function Sidebar() {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="#">
+                                    <NavLink to="/item-fiches">
                                         <i className="metismenu-icon">
                                         </i>Məhsul hərəkətləri
                                     </NavLink>

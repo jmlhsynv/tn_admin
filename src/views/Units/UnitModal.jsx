@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setNewModal } from '../../stores/Units/newUnit';
@@ -10,9 +10,13 @@ import { postUnit, editUnit } from '../../stores/Units/units';
 import { useHistory } from "react-router-dom"
 import { logout } from '../../stores/auth';
 import { removeErrors } from '../../stores/Units/units';
+import { useForm } from "react-hook-form";
+
 
 
 function UnitModal() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
   const dispatch = useDispatch()
 
   const history = useHistory()
@@ -29,39 +33,39 @@ function UnitModal() {
 
   // ADD NEW CATEGORY
   const { modal } = useSelector(state => state.newUnit)
-  const [inp_new, setInp_new] = useState({});
-
-  const handleChange = (e) => {
-    let value = e.target.value;
-    let name = e.target.name;
-
-    setInp_new({ ...inp_new, [name]: value, USER_ID: 1 });
-  }
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(postUnit(inp_new))
+  const postData = (data, e) => {
+    data = {
+      ...data,
+      USER_ID: 1
+    };
+    dispatch(postUnit(data))
     e.target.reset()
     dispatch(setNewModal())
   }
 
   // EDIT CATEGORY
+  const { register: editRegister, formState: { errors: editErrors }, handleSubmit: handleEditSubmit } = useForm();
   const editModal = useSelector(state => state.editUnit.modal)
   const editDetail = useSelector(state => state.editUnit.detail)
   const [inp_edit, setInp_edit] = useState({ AMOUNT: "", CODE: "" })
 
+  const editForm = useRef()
   useEffect(() => {
     setInp_edit(editDetail)
   }, [editDetail])
-
-  const handleEditChange = (e) => {
-    let name = e.target.name
-    let value = e.target.value
-
-    setInp_edit({ ...inp_edit, [name]: value })
+  
+  const editData = (data, e) => {
+    data = {
+      ...inp_edit,
+      ...data
+    };
+    dispatch(editUnit(data))
+    e.target.reset()
+    dispatch(setEditModal())
   }
-  const handleEditSubmit = (e) => {
-    e.preventDefault()
-    dispatch(editUnit(inp_edit))
+
+  const closeEditModal = () => {
+    editForm.current.reset()
     dispatch(setEditModal())
   }
 
@@ -115,21 +119,27 @@ function UnitModal() {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form onSubmit={(e) => handleSubmit(e)}>
+            <form onSubmit={handleSubmit(postData)}>
 
               <div className="modal-body">
                 <div className="input-group">
                   <div className="input-group-prepend">
                     <span className="input-group-text">Vahid Kodu :</span>
                   </div>
-                  <input type="text" className="form-control" name='CODE' onChange={(e) => handleChange(e)} />
+                  <input type="text" className="form-control" {...register("CODE", { required: true })} name='CODE'  />
                 </div>
+                {errors.CODE && <span className='text-danger'>Vahid kodu boş ola bilməz!</span>}
                 <div className="input-group mt-3">
                   <div className="input-group-prepend">
                     <span className="input-group-text">Vahid Miqdarı:</span>
                   </div>
-                  <input type="text" className="form-control" name='AMOUNT' onChange={(e) => handleChange(e)} />
+                  <input type="text" className="form-control" {...register("AMOUNT", { required: true, pattern: /\d+/g })} name='AMOUNT'  />
                 </div>
+                {errors.AMOUNT && (
+                  errors.AMOUNT.type === "required" ? <span className='text-danger'>Vahid Miqdarı boş ola bilməz!</span> :
+                  <span className='text-danger'>Vahid Miqdarı rəqəm olmalıdır!</span>
+                )}
+
 
               </div>
               <div className="modal-footer">
@@ -153,32 +163,42 @@ function UnitModal() {
                 {inp_edit ? inp_edit.CODE || '' : " "}
               </h5>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close"
-                onClick={() => dispatch(setEditModal())}>
+                onClick={() => closeEditModal()}>
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form onSubmit={(e) => handleEditSubmit(e)}>
+            <form ref={editForm} onSubmit={handleEditSubmit(editData)}>
 
               <div className="modal-body">
                 <div className="input-group">
                   <div className="input-group-prepend">
                     <span className="input-group-text">Vahid Kodu : </span>
                   </div>
-                  <input type="text" className="form-control" value={inp_edit ? inp_edit.CODE || '' : " "} name='CODE' onChange={(e) => handleEditChange(e)} />
+                  <input type="text" className="form-control" name='CODE' 
+                  defaultValue={inp_edit ? inp_edit.CODE || '' : " "}
+                  {...editRegister("CODE", { required: true })} />
                 </div>
+                {editErrors.CODE && <span className='text-danger'>Vahid kodu boş ola bilməz!</span>}
+
                 <div className="input-group mt-3">
                   <div className="input-group-prepend">
                     <span className="input-group-text">Vahid Miqdarı :</span>
                   </div>
-                  <input type="text" className="form-control" value={inp_edit ? inp_edit.AMOUNT || '' : " "} name='AMOUNT' onChange={(e) => handleEditChange(e)} />
+                  <input type="text" className="form-control"  name='AMOUNT' 
+                  defaultValue={inp_edit ? inp_edit.AMOUNT || '' : " "}
+                  {...editRegister("AMOUNT", { required: true, pattern: /\d+/g })} />
                 </div>
+                {editErrors.AMOUNT && (
+                  editErrors.AMOUNT.type === "required" ? <span className='text-danger'>Vahid Miqdarı boş ola bilməz!</span> :
+                  <span className='text-danger'>Vahid Miqdarı rəqəm olmalıdır!</span>
+                )}
 
               </div>
               <div className="modal-footer">
                 <button className=" btn btn-primary" type='submit'>Göndər</button>
 
                 <button type="button" className="btn btn-secondary" data-dismiss="modal"
-                  onClick={() => dispatch(setEditModal())}>Bağla</button>
+                  onClick={() => closeEditModal()}>Bağla</button>
               </div>
             </form>
 

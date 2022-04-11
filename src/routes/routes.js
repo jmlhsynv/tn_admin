@@ -8,6 +8,7 @@ import Marks from "../views/Marks/Marks"
 import Submarks from "../views/Submarks/Submarks"
 import Units from "../views/Units/Units"
 import Items from "../views/Items/Items"
+import ItemFiches from "../views/ItemFiches/ItemFiches"
 
 export const routes = [
     {
@@ -56,6 +57,13 @@ export const routes = [
         path: "/items",
         exact: true,
         component: Items,
+        auth: true,
+        admin: false
+    },
+    {
+        path: "/item-fiches",
+        exact: true,
+        component: ItemFiches,
         auth: true,
         admin: false
     },
