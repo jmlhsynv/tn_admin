@@ -70,7 +70,7 @@ function Submarks() {
             <h5 className="card-title">Marka alt kateqoriyaları </h5>
             <button className="btn btn-primary mr-5" onClick={() => dispatch(setNewModal())}>
               <i className="fa fa-fw" aria-hidden="true" title="Copy to use plus"></i>
-              Yeni Marka
+              Yeni Marka alt kateqoriyası
             </button>
           </div>
           <table className="mb-0 table">

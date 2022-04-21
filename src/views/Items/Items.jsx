@@ -18,15 +18,25 @@ import { useHistory } from "react-router-dom";
 import { logout } from "../../stores/auth";
 import { removeErrors } from "../../stores/Items/items";
 
+import { fetchAsyncCategory } from "../../stores/Categories/category";
+import { fetchMarks } from "../../stores/Marks/marks";
+import { fetchSubmarks } from "../../stores/Submarks/submarks";
+
 function Items() {
   const dispatch = useDispatch();
   const { items, page, page_count } = useSelector((state) => state.items);
   const { status } = useSelector((state) => state.auth);
 
+  const { categories } = useSelector((state) => state.categories);
+  const { marks } = useSelector((state) => state.marks);
+  const { submarks } = useSelector((state) => state.submarks);
+
   useEffect(() => {
     dispatch(fetchByRow(1));
+    dispatch(fetchAsyncCategory());
+    dispatch(fetchMarks());
+    dispatch(fetchSubmarks());
   }, [dispatch]);
-
   useEffect(() => {
     dispatch(getStatus());
   }, [dispatch, items]);
@@ -94,6 +104,19 @@ function Items() {
     page_count ? setPageCount(page_count) : setPageCount(0);
   }, [page, page_count]);
 
+  // Search
+  const [search, setSearch] = useState({});
+  const searchChange = (e) => {
+    const { name, value } = e.target;
+    setSearch({
+      ...search,
+      [name]: value,
+    });
+  };
+  const searchItem = (e) => {
+    e.preventDefault()
+    console.log(search);
+  };
   return (
     <div>
       <div className="main-card mb-3 card">
@@ -101,7 +124,7 @@ function Items() {
           <div className="w-100 d-flex justify-content-between mb-3">
             <h5 className="card-title">Məhsullar </h5>
             <button
-              className="btn btn-primary mr-5"
+              className="btn btn-primary"
               onClick={() => dispatch(setNewModal())}
             >
               <i
@@ -113,6 +136,97 @@ function Items() {
               </i>
               Yeni Məhsul
             </button>
+          </div>
+          <div className="col-12 my-3">
+            <form onSubmit={(e) => searchItem(e)}>
+              <div
+                className="row flex-nowrap justify-content-between"
+                style={{ gap: 10 }}
+              >
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">Ad : </span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Məhsul adı"
+                    className="form-control"
+                    name="name"
+                    onChange={(e) => searchChange(e)}
+                  />
+                </div>
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">Kategoriya : </span>
+                  </div>
+                  <select
+                    defaultValue=""
+                    name="category"
+                    className="form-control"
+                    onChange={(e) => searchChange(e)}
+                  >
+                    <option value="" disabled>
+                      --Kategoriya--
+                    </option>
+
+                    {categories && categories.length > 0
+                      ? categories.map((e, i) => (
+                          <option value={e.ID} key={i}>
+                            {e.NAME_}
+                          </option>
+                        ))
+                      : ""}
+                  </select>
+                </div>
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text"> Marka : </span>
+                  </div>
+                  <select
+                    name="mark"
+                    defaultValue=""
+                    className="form-control"
+                    onChange={(e) => searchChange(e)}
+                  >
+                    <option value="" disabled>
+                      --Marka--
+                    </option>
+                    {marks && marks.length > 0
+                      ? marks.map((e, i) => (
+                          <option value={e.ID} key={i}>
+                            {e.NAME_}
+                          </option>
+                        ))
+                      : ""}
+                  </select>
+                </div>
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">Alt Marka : </span>
+                  </div>
+                  <select
+                    name="submark"
+                    defaultValue=""
+                    className="form-control"
+                    onChange={(e) => searchChange(e)}
+                  >
+                    <option value="" disabled>
+                      --Alt Marka--
+                    </option>
+                    {submarks && submarks.length > 0
+                      ? submarks.map((e, i) => (
+                          <option value={e.ID} key={i}>
+                            {e.NAME_}
+                          </option>
+                        ))
+                      : ""}
+                  </select>
+                </div>
+                <div className="btn-group">
+                  <button className="btn btn-primary btn-block">Axtar</button>
+                </div>
+              </div>
+            </form>
           </div>
           <table className="mb-0 table">
             <thead>

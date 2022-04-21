@@ -4,15 +4,6 @@ const { REACT_APP_API_URL } = process.env;
 
 const url = REACT_APP_API_URL + "Items";
 
-// export const fetchItems = createAsyncThunk("items/fetchItems", async () => {
-//   const headers = {
-//     "Content-Type": "application/json",
-//     Authorization: "Bearer " + localStorage.getItem("token"),
-//   };
-//   const response = await axios.get(url, { headers });
-//   return response.data[0];
-// });
-
 export const fetchByRow = createAsyncThunk("items/fetchByRow", async (row) => {
   const headers = {
     "Content-Type": "application/json",

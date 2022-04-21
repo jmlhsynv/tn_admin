@@ -25,7 +25,6 @@ export const postAsyncCategory = createAsyncThunk(
       "Authorization": "Bearer "+ localStorage.getItem('token')
     }
     const res = await axios.post(url, postedData, {headers});
-    console.log(res);
     return {
       data: postedData,
       success: res.data
